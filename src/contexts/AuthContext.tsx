@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
+import { AUTH_EXPIRED_EVENT } from '@/api/client';
 import { login as apiLogin, register as apiRegister } from '@/api/auth';
 import { getProfile } from '@/api/users';
 import type { UserResponse } from '@/api/types';
@@ -19,6 +20,8 @@ interface AuthContextValue {
   email: string | null;
   isAuthenticated: boolean;
   loading: boolean;
+  error: string | null;
+  clearError: () => void;
   logout: () => void;
   refetchUser: () => Promise<void>;
 }
@@ -28,19 +31,52 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 const TOKEN_KEY = 'token';
 const EMAIL_KEY = 'user_email';
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const { user: auth0User, isAuthenticated: auth0Authenticated, isLoading: auth0Loading, logout: auth0Logout } = useAuth0();
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [registerAttempts, setRegisterAttempts] = useState<Record<string, number>>({});
   const navigate = useNavigate();
+
+  const clearAuthState = useCallback(() => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(EMAIL_KEY);
+    setToken(null);
+    setUser(null);
+  }, []);
+
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  const validateStoredToken = useCallback(async () => {
+    const storedToken = localStorage.getItem(TOKEN_KEY);
+    if (!storedToken) {
+      clearAuthState();
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const profile = await getProfile();
+      setToken(storedToken);
+      setUser(profile);
+    } catch {
+      clearAuthState();
+      setError('Your session has expired. Please sign in again.');
+    } finally {
+      setLoading(false);
+    }
+  }, [clearAuthState]);
 
   // Sync Auth0 authentication with backend
   const syncWithBackend = useCallback(async (email: string) => {
     if (syncing) return;
     setSyncing(true);
+    setError(null);
     try {
       const res = await apiLogin(email);
       localStorage.setItem(TOKEN_KEY, res.token);
@@ -54,6 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (currentAttempts >= 3) {
         console.error(`Max register attempts (3) reached for ${email}`);
+        setError('Failed to authenticate with backend. Please try again.');
         return;
       }
 
@@ -67,6 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setRegisterAttempts(prev => ({ ...prev, [email]: 0 }));
       } catch (err) {
         console.error(`Failed to sync with backend (attempt ${currentAttempts + 1}/3):`, err);
+        setError('Failed to authenticate with backend. Please try again.');
       }
     } finally {
       setSyncing(false);
@@ -93,24 +131,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     } else {
-      // No Auth0 authentication, clear everything
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(EMAIL_KEY);
-      setToken(null);
-      setUser(null);
-      setLoading(false);
+      validateStoredToken();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth0Loading, auth0Authenticated, auth0User?.email]);
 
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      clearAuthState();
+      setError('Your session has expired. Please sign in again.');
+      navigate('/login');
+    };
+
+    globalThis.addEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired);
+    return () => {
+      globalThis.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired);
+    };
+  }, [clearAuthState, navigate]);
+
   const logout = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(EMAIL_KEY);
-    setToken(null);
-    setUser(null);
-    auth0Logout({ logoutParams: { returnTo: window.location.origin } });
+    clearAuthState();
+    setError(null);
+    auth0Logout({ logoutParams: { returnTo: globalThis.location.origin } });
     navigate('/');
-  }, [auth0Logout, navigate]);
+  }, [auth0Logout, clearAuthState, navigate]);
 
   const refetchUser = useCallback(async () => {
     if (!localStorage.getItem(TOKEN_KEY)) return;
@@ -118,21 +162,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const profile = await getProfile();
       setUser(profile);
     } catch {
-      localStorage.removeItem(TOKEN_KEY);
-      setToken(null);
-      setUser(null);
+      clearAuthState();
+      setError('Your session has expired. Please sign in again.');
+      navigate('/login');
     }
-  }, []);
+  }, [clearAuthState, navigate]);
 
   const value: AuthContextValue = useMemo(() => ({
     token,
     user,
     email: auth0User?.email || null,
-    isAuthenticated: auth0Authenticated && !!token && !!user,
+    isAuthenticated: !!token && !!user,
     loading,
+    error,
+    clearError,
     logout,
     refetchUser,
-  }), [token, user, auth0User?.email, auth0Authenticated, loading, logout, refetchUser]);
+  }), [token, user, auth0User?.email, loading, error, clearError, logout, refetchUser]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

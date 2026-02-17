@@ -77,9 +77,9 @@ export default function ContestPage() {
 
   if (!user?.codeforces_handle) {
     return (
-      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow text-center">
+      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm text-center">
         <p className="text-red-600 font-medium">Please add your Codeforces handle first.</p>
-        <button onClick={() => navigate('/profile')} className="mt-4 rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all">
+        <button onClick={() => navigate('/profile')} className="mt-4 rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer">
           Go to Profile
         </button>
       </div>
@@ -104,7 +104,7 @@ export default function ContestPage() {
 
   if (phase === 'NO_SESSION') {
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
         <div className="mb-4">
           <label className="block font-medium mb-1">Contest Level</label>
           <input
@@ -116,12 +116,12 @@ export default function ContestPage() {
         </div>
         <p className="text-sm text-gray-600 mb-2">Suggested level: {suggestedLevel}</p>
         <p className="text-sm text-red-600 mb-4">
-          <button onClick={() => navigate('/levels')} className="underline">Level sheet</button> for level details
+          <button onClick={() => navigate('/levels')} className="underline cursor-pointer">Level sheet</button> for level details
         </p>
         <div className="mb-4">
           <button
             onClick={() => setShowThemeDropdown(!showThemeDropdown)}
-            className="w-full sm:w-auto rounded-lg border border-gray-200 px-4 py-3 bg-white hover:bg-gray-50 focus:ring-1 focus:ring-black focus:outline-none transition-colors"
+            className="w-full sm:w-auto rounded-lg border border-gray-200 px-4 py-3 bg-white hover:bg-gray-50 focus:ring-1 focus:ring-black focus:outline-none transition-colors cursor-pointer"
           >
             Theme: {selectedTheme}
           </button>
@@ -143,7 +143,7 @@ export default function ContestPage() {
         <button
           onClick={runCreate}
           disabled={creating}
-          className="w-full sm:w-auto rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="w-full sm:w-auto rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
         >
           {creating ? 'Creating...' : 'Create Contest'}
         </button>
@@ -154,7 +154,7 @@ export default function ContestPage() {
   if (phase === 'REVIEW' && session) {
     const problems = [session.p1, session.p2, session.p3, session.p4]
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
         <h2 className="text-xl sm:text-2xl font-bold mb-6">Review Problems</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
           {problems.map((p, i) => (
@@ -163,7 +163,7 @@ export default function ContestPage() {
               href={buildCodeforcesUrl(p.contestID, p.index)}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded border p-4 text-center font-medium hover:bg-gray-50"
+              className="rounded border p-4 text-center font-medium hover:bg-gray-50 cursor-pointer"
               style={{ backgroundColor: getRatingColor(p.rating) }}
             >
               Problem {i + 1}: {p.rating}
@@ -174,7 +174,7 @@ export default function ContestPage() {
         <button
           onClick={runStart}
           disabled={starting}
-          className="w-full sm:w-auto rounded-xl bg-green-600 px-6 py-3 text-white font-medium hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="w-full sm:w-auto rounded-xl bg-green-600 px-6 py-3 text-white font-medium hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
         >
           {starting ? 'Starting...' : 'Start Contest'}
         </button>
@@ -185,7 +185,7 @@ export default function ContestPage() {
   if (phase === 'COUNTDOWN' && startResponse) {
     const targetMs = startResponse.starts_at * 1000
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow text-center">
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm text-center">
         <h2 className="text-xl sm:text-2xl font-bold mb-6">Contest starts in</h2>
         <CountdownTimer targetTimestamp={targetMs} onExpire={onCountdownExpire} className="text-4xl font-mono" />
       </div>
@@ -198,7 +198,7 @@ export default function ContestPage() {
     const statusMap = new Map(problemStatuses.map((s) => [s.problem_number, s]))
 
     return (
-      <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+      <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
         <div className="rounded-lg border-2 border-gray-200 bg-gray-50 p-3 sm:p-4 mb-6">
           <div className="text-red-600 font-medium mb-2">NOTE:</div>
           <ul className="text-sm space-y-1">
@@ -212,7 +212,7 @@ export default function ContestPage() {
           </span>
           <button
             onClick={refresh}
-            className="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 active:scale-95 transition-all"
+            className="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 active:scale-95 transition-all cursor-pointer"
           >
             Refresh
           </button>
@@ -254,7 +254,7 @@ export default function ContestPage() {
           <button
             onClick={async () => { setEnding(true); await end(); setEnding(false) }}
             disabled={ending}
-            className="rounded-xl bg-red-600 px-6 py-2 text-white hover:bg-red-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="rounded-xl bg-red-600 px-6 py-2 text-white hover:bg-red-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
             End Contest
           </button>
@@ -265,7 +265,7 @@ export default function ContestPage() {
 
   if (phase === 'RESULT' && endResult) {
     return (
-      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
         <h2 className="text-xl sm:text-2xl font-bold mb-6">Contest Over</h2>
         <div className="space-y-2">
           <p>Solved: {endResult.solved_count}/4</p>
@@ -277,7 +277,7 @@ export default function ContestPage() {
         </div>
         <button
           onClick={dismissResult}
-          className="mt-6 w-full sm:w-auto rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
+          className="mt-6 w-full sm:w-auto rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
         >
           Back to Contest
         </button>

@@ -7,7 +7,7 @@ import startContest from '@/assets/start_contest.jpg'
 export default function GuidePage() {
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Guide on ThemeCP</h1>
         <ol className="list-decimal list-inside space-y-6 sm:space-y-8">
           <li className="text-sm sm:text-base text-gray-700">

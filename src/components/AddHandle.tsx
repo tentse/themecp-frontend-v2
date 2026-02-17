@@ -73,7 +73,7 @@ export default function AddHandle() {
         <button
           onClick={handleFindProblem}
           disabled={loading}
-          className="w-full sm:w-auto rounded-xl bg-black px-5 py-3 text-white hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="w-full sm:w-auto rounded-xl bg-black px-5 py-3 text-white hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
         >
           {loading ? 'Loading...' : 'Find Problem'}
         </button>
@@ -95,7 +95,7 @@ export default function AddHandle() {
             <button
               onClick={handleVerify}
               disabled={verifying}
-              className="w-full sm:w-auto rounded-xl bg-green-600 px-5 py-3 text-white hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full sm:w-auto rounded-xl bg-green-600 px-5 py-3 text-white hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
               {verifying ? 'Verifying...' : 'Verify'}
             </button>

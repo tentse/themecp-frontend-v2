@@ -5,7 +5,7 @@ import upi from '@/assets/upi.jpeg'
 
 export default function Donation() {
   return (
-    <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+    <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
       <h3 className="mb-6 text-xl sm:text-2xl font-bold">Donate</h3>
       <div className="mb-6 space-y-2 text-gray-700">
         <p>
@@ -25,7 +25,7 @@ export default function Donation() {
           <img src={RazorpayLogo} alt="Razorpay" className="h-10 sm:h-12 object-contain" />
           <button
             onClick={() => window.open('https://rzp.io/rzp/aYMLI3hg', '_blank')}
-            className="mt-2 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
+            className="mt-2 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
           >
             Donate
           </button>
@@ -34,7 +34,7 @@ export default function Donation() {
           <img src={paypal} alt="PayPal" className="h-10 sm:h-12 object-contain" />
           <button
             onClick={() => alert('Currently PayPal doesn\'t work. Sorry')}
-            className="mt-2 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
+            className="mt-2 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
           >
             Donate
           </button>

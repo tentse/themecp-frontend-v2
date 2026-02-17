@@ -32,7 +32,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
           aria-label="Toggle menu"
         >
           {mobileMenuOpen ? (
@@ -53,7 +53,7 @@ export default function Navbar() {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
               }
             >
               Home
@@ -63,7 +63,7 @@ export default function Navbar() {
             <NavLink
               to="/guide"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
               }
             >
               Guide
@@ -73,7 +73,7 @@ export default function Navbar() {
             <NavLink
               to="/levels"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
               }
             >
               Level Sheet
@@ -83,7 +83,7 @@ export default function Navbar() {
             <NavLink
               to="/contest"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
               }
             >
               Contest
@@ -94,7 +94,7 @@ export default function Navbar() {
             <NavLink
               to="/profile"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
               }
             >
               Profile
@@ -105,14 +105,14 @@ export default function Navbar() {
         {isAuthenticated ? (
           <button
             onClick={handleLogout}
-            className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto rounded-xl border border-gray-200 px-4 py-2 hover:bg-gray-50 active:scale-95 transition-all"
+            className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto rounded-xl border border-gray-200 px-4 py-2 hover:bg-gray-50 active:scale-95 transition-all cursor-pointer"
           >
             Logout
           </button>
         ) : (
           <button
             onClick={() => { setMobileMenuOpen(false); navigate('/login') }}
-            className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto rounded-xl bg-black px-5 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
+            className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto rounded-xl bg-black px-5 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
           >
             Login
           </button>

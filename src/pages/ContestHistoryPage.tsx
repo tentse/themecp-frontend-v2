@@ -33,7 +33,7 @@ export default function ContestHistoryPage() {
           <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
         </div>
       ) : (
-        <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+        <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse rounded-lg overflow-hidden text-xs sm:text-sm">
               <thead>
@@ -94,14 +94,14 @@ export default function ContestHistoryPage() {
             <button
               onClick={() => setSkip((s) => Math.max(0, s - limit))}
               disabled={skip === 0}
-              className="w-full sm:w-auto rounded-xl border border-gray-100 px-5 py-2 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full sm:w-auto rounded-xl border border-gray-100 px-5 py-2 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
               Previous
             </button>
             <button
               onClick={() => setSkip((s) => s + limit)}
               disabled={skip + limit >= total}
-              className="w-full sm:w-auto rounded-xl border border-gray-100 px-5 py-2 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full sm:w-auto rounded-xl border border-gray-100 px-5 py-2 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
               Next
             </button>

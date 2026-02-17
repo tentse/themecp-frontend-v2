@@ -4,8 +4,8 @@ const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
   return (
     <button 
-      onClick={() => loginWithRedirect()} 
-      className="button login"
+      onClick={() => loginWithRedirect()}
+      className="button login cursor-pointer"
     >
       Log In
     </button>

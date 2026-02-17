@@ -7,6 +7,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button,
+a[href],
+[role="button"] {
+  cursor: pointer;
+}
+
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Monaco, 'Cascadia Code', 
     'Roboto Mono', Menlo, Consolas, monospace;

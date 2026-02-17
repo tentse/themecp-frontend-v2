@@ -2,6 +2,7 @@ import type { ApiError } from './types';
 
 // Fallback for dev; set VITE_API_BASE_URL in .env for production
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+export const AUTH_EXPIRED_EVENT = 'auth:expired';
 
 function getToken(): string | null {
   return localStorage.getItem('token');
@@ -32,6 +33,7 @@ function getHeaders(includeAuth = true): HeadersInit {
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
+    const hadToken = !!localStorage.getItem('token');
     let detail = 'An error occurred';
     try {
       const body = await response.json();
@@ -44,6 +46,9 @@ async function handleResponse<T>(response: Response): Promise<T> {
     const error: ApiError = { detail };
     if (response.status === 401) {
       localStorage.removeItem('token');
+      if (hadToken) {
+        globalThis.dispatchEvent(new CustomEvent(AUTH_EXPIRED_EVENT));
+      }
     }
     throw error;
   }

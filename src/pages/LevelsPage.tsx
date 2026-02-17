@@ -15,7 +15,7 @@ export default function LevelsPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl sm:text-3xl font-bold text-center">Level Sheet</h1>
-      <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+      <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <div className="grid grid-cols-7 gap-2 sm:gap-4 pb-4 mb-4 font-semibold text-gray-700 min-w-[600px] text-xs sm:text-sm">
             <div className="flex items-center justify-center p-2">Level</div>
