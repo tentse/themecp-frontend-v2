@@ -16,9 +16,9 @@ import type { UserResponse } from '@/api/types';
 interface AuthContextValue {
   token: string | null;
   user: UserResponse | null;
+  email: string | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string) => Promise<void>;
   logout: () => void;
   refetchUser: () => Promise<void>;
 }
@@ -26,13 +26,15 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 const TOKEN_KEY = 'token';
+const EMAIL_KEY = 'user_email';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { user: auth0User, isAuthenticated: auth0Authenticated, isLoading: auth0Loading } = useAuth0();
+  const { user: auth0User, isAuthenticated: auth0Authenticated, isLoading: auth0Loading, logout: auth0Logout } = useAuth0();
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [registerAttempts, setRegisterAttempts] = useState<Record<string, number>>({});
   const navigate = useNavigate();
 
   // Sync Auth0 authentication with backend
@@ -45,24 +47,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(res.token);
       const profile = await getProfile();
       setUser(profile);
+      setRegisterAttempts(prev => ({ ...prev, [email]: 0 }));
     } catch {
-      // User not found (401) - try register
+      // User not found (401) - try register with retry limit
+      const currentAttempts = registerAttempts[email] || 0;
+      
+      if (currentAttempts >= 3) {
+        console.error(`Max register attempts (3) reached for ${email}`);
+        return;
+      }
+
       try {
+        setRegisterAttempts(prev => ({ ...prev, [email]: currentAttempts + 1 }));
         const res = await apiRegister(email);
         localStorage.setItem(TOKEN_KEY, res.token);
         setToken(res.token);
         const profile = await getProfile();
         setUser(profile);
+        setRegisterAttempts(prev => ({ ...prev, [email]: 0 }));
       } catch (err) {
-        console.error('Failed to sync with backend:', err);
+        console.error(`Failed to sync with backend (attempt ${currentAttempts + 1}/3):`, err);
       }
     } finally {
       setSyncing(false);
       setLoading(false);
     }
-  }, [syncing]);
+  }, [syncing, registerAttempts]);
 
-  // When Auth0 user changes, sync with backend
+  // When Auth0 user changes, store email and sync with backend
   useEffect(() => {
     if (auth0Loading) {
       setLoading(true);
@@ -70,7 +82,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (auth0Authenticated && auth0User?.email) {
-      // User is authenticated with Auth0, sync with backend
+      // Store email immediately from Auth0 (works even if backend is down)
+      localStorage.setItem(EMAIL_KEY, auth0User.email);
+      
+      // Try to sync with backend if not already synced
       const backendToken = localStorage.getItem(TOKEN_KEY);
       if (!backendToken || !user) {
         syncWithBackend(auth0User.email);
@@ -78,29 +93,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     } else {
-      // No Auth0 authentication, clear backend state
+      // No Auth0 authentication, clear everything
       localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(EMAIL_KEY);
       setToken(null);
       setUser(null);
       setLoading(false);
     }
-  }, [auth0Loading, auth0Authenticated, auth0User, syncWithBackend, user]);
-
-  // Login function for Auth0 (will be triggered by Auth0Provider)
-  const login = useCallback(
-    async (email: string) => {
-      await syncWithBackend(email);
-      navigate('/profile');
-    },
-    [navigate, syncWithBackend]
-  );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth0Loading, auth0Authenticated, auth0User?.email]);
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(EMAIL_KEY);
     setToken(null);
     setUser(null);
+    auth0Logout({ logoutParams: { returnTo: window.location.origin } });
     navigate('/');
-  }, [navigate]);
+  }, [auth0Logout, navigate]);
 
   const refetchUser = useCallback(async () => {
     if (!localStorage.getItem(TOKEN_KEY)) return;
@@ -117,12 +127,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value: AuthContextValue = useMemo(() => ({
     token,
     user,
-    isAuthenticated: !!token && !!user,
+    email: auth0User?.email || null,
+    isAuthenticated: auth0Authenticated && !!token && !!user,
     loading,
-    login,
     logout,
     refetchUser,
-  }), [token, user, loading, login, logout, refetchUser]);
+  }), [token, user, auth0User?.email, auth0Authenticated, loading, logout, refetchUser]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

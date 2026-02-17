@@ -17,6 +17,7 @@ import ContestPage from '@/pages/ContestPage'
 import ProfilePage from '@/pages/ProfilePage'
 import ContestHistoryPage from '@/pages/ContestHistoryPage'
 import ImportExportPage from '@/pages/ImportExportPage'
+import Auth0DemoPage from '@/pages/Auth0DemoPage'
 
 function PageViewTracker() {
   const location = useLocation()
@@ -58,20 +59,29 @@ function AppContent() {
             <Route path="import-export" element={<ImportExportPage />} />
           </Route>
         </Route>
+        {/* Auth0 Demo Page - standalone route without Layout */}
+        <Route path="/auth0-demo" element={<Auth0DemoPage />} />
       </Routes>
     </LevelProvider>
   )
 }
 
 export default function App() {
+  const authorizationParams: { redirect_uri: string; audience?: string } = {
+    redirect_uri: `${window.location.origin}/login`,
+  }
+  
+  // Only include audience if it's defined and not a placeholder
+  const audience = import.meta.env.VITE_AUTH0_AUDIENCE
+  if (audience && !audience.includes('your-api-identifier')) {
+    authorizationParams.audience = audience
+  }
+
   return (
     <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN || ''}
       clientId={import.meta.env.VITE_AUTH0_CLIENT_ID || ''}
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      }}
+      authorizationParams={authorizationParams}
     >
       <AuthProvider>
         <AppContent />
