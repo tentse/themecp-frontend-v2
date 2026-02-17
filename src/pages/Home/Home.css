@@ -1,0 +1,176 @@
+
+.make-red {
+  color: red;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1em;
+}
+.wrapper {
+  margin-top: 250px;
+  margin-bottom: 320px;
+  height: 100px;
+  /*This part is important for centering*/
+  display: grid;
+  place-items: center;
+}
+
+.typing-demo {
+  width: 22ch;
+  animation: typing 2s steps(22), blink .5s step-end infinite alternate;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 4em;
+}
+
+@keyframes typing {
+  from {
+    width: 0
+  }
+}
+    
+@keyframes blink {
+  50% {
+    border-color: transparent
+  }
+}
+
+.get-started-button {
+  margin-top: 80px;
+  border: none;
+  background-color: black;
+  color: white;
+  padding: 8px;
+  padding-right: 20px;
+  padding-left: 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.get-started-button:hover {
+  opacity: 0.8;
+}
+.get-started-button:active {
+  opacity: 0.5;
+}
+
+.description-box {
+  border-radius: 20px;
+  height: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 40px;
+}
+.title {
+  color: black;
+  border: 3px black solid;
+  border-radius: 20px;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 45px;
+
+  width: 35%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.description {
+  margin-left: 10px;
+  border: 3px black solid;
+  border-radius: 20px;
+  font-family: monospace;
+  font-size: 30px;
+
+  margin: none;
+  padding: 50px;
+  width: 65%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title-2 {
+  color: black;
+  border: 3px black solid;
+  border-radius: 20px;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 45px;
+
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.description-2 {
+  border: 3px black solid;
+  border-radius: 20px;
+
+  margin-top: 10px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.description-2 li {
+  font-family: monospace;
+  font-size: 25px;
+  margin-top: 20px;
+  font-weight: bold;
+
+}
+.discord-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  margin-left: 15px;
+  border: none;
+  background-color: #5562EA;
+  color: white;
+  height: 40px;
+  margin-top: 80px;
+  border-radius: 20px;
+  width: 150px;
+  cursor: pointer;
+  padding-left: 2px;
+  border: none;
+  transition: 0.15s;
+}
+.discord-button:hover {
+  opacity: 0.8;
+}
+.discord-button:active {
+  background-color: white;
+  color: #5562EA;
+}
+
+@media (max-width: 730px) {
+  * {
+    font-size: 8px;
+  }
+  .title {
+    width: 100%;
+    font-size: 35px;
+    margin-bottom: 10px;
+  }
+  .description-box {
+    width: 100%;
+    display: block;
+  }
+  .title-2 {
+    font-size: 30px;
+    width: 290;
+    margin-top: 190px;
+  }
+  .get-started-button {
+    font-size: 20px;
+  }
+  .discord-button {
+    font-size: 20px;
+  }
+}

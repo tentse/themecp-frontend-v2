@@ -1,0 +1,23 @@
+.logout-button {
+    font-weight: 700;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    height: 40px;
+    width: 90px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+.logout-button:hover {
+    opacity: 0.8;
+}
+.logout-button:active {
+    opacity: 0.5;
+}
+@media (max-width: 730px) {
+    .logout-button {
+        width: 40px;
+        height: 25px;
+    }
+}

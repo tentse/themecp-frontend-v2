@@ -1,0 +1,54 @@
+.importExport-container {
+    width: 50%;
+    height: 350px;
+    margin-left: 30px;
+    margin-top: 10px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+.import-div {
+    height: 50%;
+    padding: 10px 10px;
+    border-bottom: 2px solid black;
+}
+.export-div {
+    padding: 10px 10px;
+}
+.download-button {
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 5px;
+    width: 120px;
+    background-color: black;
+    color: white;
+    transition: 0.15s;
+}
+.download-button:hover {
+    background-color: white;
+    color: black;
+}
+.download-button:active {
+    background-color: black;
+    color: white
+}
+.input-file {
+    margin-top: 10px;
+}
+.upload-button {
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px;
+    width: 120px;
+    color: black;
+    transition: 0.15s;
+}
+.upload-button:hover {
+    color: white;
+    background-color: black;
+}
+.upload-button:active {
+    color: black;
+    background-color: white;
+}

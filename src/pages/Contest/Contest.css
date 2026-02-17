@@ -1,0 +1,209 @@
+.main-container {
+    width: 800px;
+    height: 540px;
+    margin-top: 10px;
+    padding: 40px 20px;
+    border: 2px solid black;
+    border-radius: 15px;
+    box-shadow: 8px 8px 10px 5px gray;
+}
+.input-container {
+    display: flex;
+}
+
+.level-input {
+    margin-left: 7px;
+    margin-bottom: 30px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    width: 220px;
+    height: 25px;
+    font-weight: none;
+}
+.level-input:focus {
+    border: 3px solid black;
+    height: 22px;
+    margin-left: 4px;
+}
+
+
+.rating-label {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    cursor: default;
+}
+
+.problem-container {
+    display: flex;
+    margin-top: 30px;
+}
+.problem-container .problem-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 130px;
+    height: 50px;
+    margin-right: 10px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    cursor:default;
+}
+
+.link-container {
+    display: flex;
+    margin-top: 20px;
+}
+.link-container .link-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 130px;
+    height: 40px;
+    margin-right: 10px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    cursor:pointer;
+    color: darkblue;
+    text-decoration: underline;
+    transition: 0.15s;
+}
+.link-container .link-box:hover {
+    opacity: 0.8;
+}
+.link-container .link-box:active {
+    opacity: 0.5;
+}
+
+
+.reroll-container {
+    display: flex;
+    margin-top: 20px;
+}
+.reroll-container .reroll-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 130px;
+    height: 40px;
+    margin-right: 10px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    cursor:pointer;
+    transition: 0.10s;
+}
+.reroll-container .reroll-box:hover {
+    opacity: 0.8;
+}
+.reroll-container .reroll-box:active {
+    opacity: 0.5;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.start-button {
+    height: 2rem;
+    width: 5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    color: white;
+    background-color: black;
+    transition: 0.20s;
+}
+.start-button:hover {
+    opacity: 0.8;
+}
+.start-button:active {
+    opacity: 0.6;
+    margin: 1px;
+}
+
+.twoMin-container {
+    margin-top : 25px;
+    color: red;
+}
+
+.themecp-button {
+    margin-top: 30px;
+    border: 1px solid;
+    color : white;
+    background-color: #24A4F2;
+    border-radius: 10px;
+    width: 190px;
+    height: 40px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+.themecp-button:hover {
+    color: #24A4F2;
+    background-color: white;
+}
+.themecp-button:active {
+    opacity: 0.8;
+}
+
+/* Dropdown button styling */
+.dropdown-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+    width: 320px;
+  }
+.dropdown-btn:hover {
+    opacity: 0.8;
+}
+.dropdown-btn:active {
+    opacity: 0.5;
+}
+
+.generating-message {
+    margin-top: 50px;
+    font-size:larger;
+    color: red;
+}
+
+  /* Dropdown menu container */
+  .dropdown-menu {
+    position: absolute;
+    margin-top: 1px;
+    margin-left: 240px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    width: 330px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  /* Dropdown list */
+  .dropdown-menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Dropdown items */
+  .dropdown-menu li {
+    text-align: left;
+    padding: 5px 0;
+  }
+  
+  /* Radio button styling */
+  .dropdown-menu input[type="radio"] {
+    margin-right: 8px;
+  }
+  
+  /* Hover effect for dropdown items */
+  .dropdown-menu li:hover {
+    background-color: #f1f1f1;
+  }
+  

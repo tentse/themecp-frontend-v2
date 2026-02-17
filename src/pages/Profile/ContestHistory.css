@@ -1,0 +1,41 @@
+.contest-history-container {
+    margin-top: 25px;
+    width: 90%;
+    margin-left: 50px;
+}
+
+.contest-history-table {
+    margin-top: 10px;
+    border: 2px solid black;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: 0.4fr 1.6fr 1.9fr 0.7fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 1.5fr 1fr 0.7fr;
+}
+.contest-history-table-data {
+    border-left: 2px solid black;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: 0.4fr 1.6fr 1.9fr 0.7fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 1.5fr 1fr 0.7fr;
+}
+.contest-history-table-data div {
+    font-weight: lighter;
+}
+@media (max-width: 1400px) {
+    .contest-history-table {
+        grid-template-columns: 0.4fr 1.6fr 1.9fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.66fr 0.66fr 0.66fr 0.66fr 1.5fr 1fr 0.7fr;
+    }
+    .contest-history-table-data {
+        grid-template-columns: 0.4fr 1.6fr 1.9fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 0.66fr 0.66fr 0.66fr 0.66fr 1.5fr 1fr 0.7fr;
+    }
+}
+@media (max-width: 730px) {
+    .contest-history-container {
+        margin-top: 15px;
+        width: 100%;
+        margin-left: 1px;
+    }
+}

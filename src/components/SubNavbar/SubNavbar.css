@@ -1,0 +1,33 @@
+.sub-navbar {
+    padding-left: 15px;
+    margin-left: 30px;
+    margin-top: 40px;
+}
+.is-active {
+    background-color: lightgrey;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+.not-active {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+@media (max-width: 730px) {
+    .sub-navbar {
+        padding-left: 15px;
+        margin-left: 1px;
+        margin-top: 10px;
+    }
+    .is-active {
+        font-size: 15px;
+    }
+    .not-active {
+        font-size: 15px;
+    }
+}

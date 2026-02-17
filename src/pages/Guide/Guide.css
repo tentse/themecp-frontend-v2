@@ -1,0 +1,41 @@
+.guide-header {
+    margin-left: 510px;
+    margin-top: 90px;
+    font-size: 50px;
+}
+.guide-container { 
+    width: 80%;
+    padding-left: 15px;
+    border: 2px solid grey;
+    border-radius: 10px;
+    margin-left: 140px;
+    margin-top : 20px;
+}
+.guide-pic {
+    width: 600px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    margin-left: 50px
+}
+
+@media (max-width: 730px) {
+    .guide-header {
+        font-size: 20px;
+        margin: 10px 10px;
+    }
+    .guide-container { 
+        width: 98%;
+        border: 2px solid grey;
+        border-radius: 10px;
+        margin: 1px 1px;
+        padding: 1px 1px;
+    }
+    .guide-pic {
+        width: 250px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        margin-left: 50px
+    }
+}

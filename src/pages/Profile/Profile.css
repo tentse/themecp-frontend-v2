@@ -1,0 +1,60 @@
+.profile-main-container {
+    display: flex;
+}
+.user-profile-data {
+    width: 1020px;
+    height: 320px;
+    border: 2px solid grey;
+    margin-left: 30px;
+    margin-top: 10px;
+    border-radius: 10px;
+    padding-left: 25px;
+}
+.rating-logo {
+    vertical-align: middle;
+}
+.user-rating-graph {
+    width: 1025px;
+    height: 500px;
+    border: 2px solid grey;
+    margin-left: 30px;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding-top: 20px;
+    padding-right: 20px;
+}
+.add-cf-graph {
+    margin-bottom: 10px;
+}
+@media (max-width: 1300px) {
+    .user-profile-data {
+        width: 850px;
+    }
+    .user-rating-graph {
+        width: 850px;
+    }
+}
+@media (max-width: 730px) {
+    .profile-main-container {
+        display: block;
+    }
+    .user-profile-data {
+        width: 94%;
+        height: 285px;
+        border: 2px solid grey;
+        margin-left: 1px;
+        margin-top: 5px;
+        border-radius: 10px;
+        padding-left: 25px;
+    }
+    .user-rating-graph {
+        width: 95%;
+        height: 500px;
+        border: 2px solid grey;
+        margin-left: 1px;
+        margin-top: 10px;
+        border-radius: 10px;
+        padding-top: 10px;
+        padding-right: 20px;
+    }
+}

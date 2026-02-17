@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://themecp.vercel.app/</loc>
+    <lastmod>2024-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://themecp.vercel.app/level_sheet</loc>
+    <lastmod>2024-11-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://themecp.vercel.app/contest</loc>
+    <lastmod>2024-11-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://themecp.vercel.app/guide</loc>
+    <lastmod>2024-11-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://themecp.vercel.app/profile</loc>
+    <lastmod>2024-11-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

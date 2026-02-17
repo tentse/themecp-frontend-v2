@@ -1,0 +1,164 @@
+.donation-container {
+    width : 400px;
+    height: 850px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin-left: 15px;
+    margin-top: 10px;
+}
+.title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 9%;
+    cursor: pointer;
+    font-size: 28px;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: 0.15s;
+}
+.title-container:hover {
+    background-color: black;
+    color: white;
+}
+.description-container {
+    display: block;
+    height: 32%;
+    padding-left: 10px;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    padding-top: 10px;
+    padding-right: 5px;
+    cursor:default;
+    overflow-y: auto;
+    /* background-color: lightblue; */
+}
+.description-container p {
+    margin-top: 5px;
+    font-size: 17px;
+    margin-bottom: 10px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.payment-option-container {
+    width: 100%;
+    height: 40%;
+    overflow-y: auto;
+}
+.donation-logo {
+    width: 140px;
+    height: 30px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid black;
+    margin-left: 20px;
+    margin-top: 10px;
+    padding: 10px 10px;
+}
+.donate-button {
+    width: 163px;
+    height: 35px;
+    margin-left: 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    transition: 0.15s;
+    cursor: pointer;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.donate-button:hover {
+    background-color: white;
+    color: black;
+}
+.donate-button:active {
+    opacity: 0.6;
+}
+.qr-code {
+    width: 140px;
+    margin-top: 10px;
+    margin-left: 33px;
+}
+.qr-label {
+    width: 100px;
+    margin-left: 80px;
+    font-size: larger;
+}
+.target {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    margin-left: 20px;
+    font-size: 17px;
+    font-weight: bolder;
+    color: red;
+}
+.contributor-list {
+    border-top: 2px solid black;
+    padding-left: 10px;
+    padding-top: 10px;
+    overflow-y: auto;
+}
+.list {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+@media (max-width: 1500px) {
+    .donation-container {
+        height: 675px;
+    }
+    .donation-logo {
+        width: 90px;
+        margin-top: 9px;
+    }
+    .donate-button {
+        width: 140px;
+    }
+}
+@media (max-width: 1400px) {
+    .donation-container {
+        width: 330px;
+        height: 900px;
+    }
+    .description-container {
+        height: 30%;
+    }
+    .donation-logo {
+        width: 110px;
+        margin-top: 15px;
+        margin-left: 20px;
+    }
+    .donate-button {
+        width: 130px;
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+    .qr-code {
+        margin-left: 20px;
+    }
+    .qr-label {
+        margin-left: 60px;
+    }
+}
+@media (max-width: 730px) {
+    .donation-container {
+        width: 96%;
+        margin-top: 30px;
+        height: 730px;
+        margin-left: 5px;
+    }
+    .donation-logo {
+        width: 100px;
+        margin-left: 30px;
+        margin-top: 20px;   
+    }
+    .donate-button {
+        width: 123px;
+        margin-left: 30px;
+    }
+    .qr-code {
+        width: 120px;
+        margin-left: 30px;
+    }
+    .qr-label {
+        margin-left: 80px;
+    }
+}

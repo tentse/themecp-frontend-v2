@@ -1,0 +1,52 @@
+.contest-outer-container {
+    display:flex;
+    margin-top: 20px;
+}
+.contest-main-container {
+    border: 2px solid black;
+    border-radius: 7px;
+    width: 800px;
+    margin-left: 50px;
+    margin-top: 20px;
+}
+.timer-container {
+    margin-top: 20px;
+    margin-left: 60px;
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 280px;
+    height: 120px;
+    background-color: rgb(210, 206, 206);
+}
+table {
+    width: 800px;
+    height: 270px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+.refresh-button {
+    border: none;
+    border-radius: 15px;
+    width: 120px;
+    cursor: pointer;
+    transition: 0.15s;
+    background-color: #24A4F2;
+    color: white;
+}
+.refresh-button:hover {
+    opacity: 0.9;
+}
+.refresh-button:active {
+    border: 3px solid black;
+    opacity: 0.6;
+}
+.important-note {
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: 17px;
+}
