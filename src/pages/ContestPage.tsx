@@ -77,9 +77,9 @@ export default function ContestPage() {
 
   if (!user?.codeforces_handle) {
     return (
-      <div className="p-8 text-center">
+      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow text-center">
         <p className="text-red-600 font-medium">Please add your Codeforces handle first.</p>
-        <button onClick={() => navigate('/profile')} className="mt-4 rounded bg-pink-500 px-4 py-2 text-white">
+        <button onClick={() => navigate('/profile')} className="mt-4 rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all">
           Go to Profile
         </button>
       </div>
@@ -87,7 +87,11 @@ export default function ContestPage() {
   }
 
   if (loading && phase === 'NO_SESSION') {
-    return <div className="p-8 text-center">Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
+      </div>
+    )
   }
 
   if (error) {
@@ -100,14 +104,14 @@ export default function ContestPage() {
 
   if (phase === 'NO_SESSION') {
     return (
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
         <div className="mb-4">
           <label className="block font-medium mb-1">Contest Level</label>
           <input
             type="number"
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(Number(e.target.value))}
-            className="rounded border border-gray-300 px-3 py-2 w-24"
+            className="rounded-lg border border-gray-200 px-4 py-3 w-full sm:w-28 focus:ring-1 focus:ring-black focus:outline-none"
           />
         </div>
         <p className="text-sm text-gray-600 mb-2">Suggested level: {suggestedLevel}</p>
@@ -117,17 +121,17 @@ export default function ContestPage() {
         <div className="mb-4">
           <button
             onClick={() => setShowThemeDropdown(!showThemeDropdown)}
-            className="rounded border border-gray-300 px-4 py-2 bg-white"
+            className="w-full sm:w-auto rounded-lg border border-gray-200 px-4 py-3 bg-white hover:bg-gray-50 focus:ring-1 focus:ring-black focus:outline-none transition-colors"
           >
             Theme: {selectedTheme}
           </button>
           {showThemeDropdown && (
-            <div className="mt-2 border border-gray-200 rounded max-h-48 overflow-y-auto">
+            <div className="mt-2 border border-gray-200 rounded-lg shadow-md max-h-48 overflow-y-auto bg-white">
               {THEME_TAGS.map((t) => (
                 <div
                   key={t}
                   onClick={() => { setSelectedTheme(t); setShowThemeDropdown(false) }}
-                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${selectedTheme === t ? 'bg-pink-100' : ''}`}
+                  className={`px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors ${selectedTheme === t ? 'bg-gray-200 font-medium' : ''}`}
                 >
                   {t}
                 </div>
@@ -139,7 +143,7 @@ export default function ContestPage() {
         <button
           onClick={runCreate}
           disabled={creating}
-          className="rounded bg-pink-500 px-6 py-3 text-white font-medium hover:bg-pink-600 disabled:opacity-50"
+          className="w-full sm:w-auto rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {creating ? 'Creating...' : 'Create Contest'}
         </button>
@@ -150,9 +154,9 @@ export default function ContestPage() {
   if (phase === 'REVIEW' && session) {
     const problems = [session.p1, session.p2, session.p3, session.p4]
     return (
-      <div className="max-w-2xl mx-auto">
-        <h2 className="text-xl font-bold mb-4">Review Problems</h2>
-        <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6">Review Problems</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
           {problems.map((p, i) => (
             <a
               key={i}
@@ -170,7 +174,7 @@ export default function ContestPage() {
         <button
           onClick={runStart}
           disabled={starting}
-          className="rounded bg-green-600 px-6 py-3 text-white font-medium hover:bg-green-700 disabled:opacity-50"
+          className="w-full sm:w-auto rounded-xl bg-green-600 px-6 py-3 text-white font-medium hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {starting ? 'Starting...' : 'Start Contest'}
         </button>
@@ -181,8 +185,8 @@ export default function ContestPage() {
   if (phase === 'COUNTDOWN' && startResponse) {
     const targetMs = startResponse.starts_at * 1000
     return (
-      <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-xl font-bold mb-4">Contest starts in</h2>
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow text-center">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6">Contest starts in</h2>
         <CountdownTimer targetTimestamp={targetMs} onExpire={onCountdownExpire} className="text-4xl font-mono" />
       </div>
     )
@@ -194,32 +198,32 @@ export default function ContestPage() {
     const statusMap = new Map(problemStatuses.map((s) => [s.problem_number, s]))
 
     return (
-      <div className="max-w-3xl mx-auto">
-        <div className="rounded border-2 border-black p-4 mb-4">
+      <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+        <div className="rounded-lg border-2 border-gray-200 bg-gray-50 p-3 sm:p-4 mb-6">
           <div className="text-red-600 font-medium mb-2">NOTE:</div>
           <ul className="text-sm space-y-1">
             <li>1. Solve problems in order (P1 before P2, etc.).</li>
             <li>2. Press Refresh to update solve status.</li>
           </ul>
         </div>
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-xl font-mono">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
+          <span className="text-lg sm:text-xl font-mono">
             Time: <CountdownTimer targetTimestamp={endMs} onExpire={end} />
           </span>
           <button
             onClick={refresh}
-            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            className="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 active:scale-95 transition-all"
           >
             Refresh
           </button>
         </div>
-        <table className="w-full border-collapse border border-gray-300">
+        <table className="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
           <thead>
-            <tr>
-              <th className="border border-gray-300 p-2 w-12">#</th>
-              <th className="border border-gray-300 p-2">Problem</th>
-              <th className="border border-gray-300 p-2 w-24">Rating</th>
-              <th className="border border-gray-300 p-2 w-28">Status</th>
+            <tr className="bg-gray-50">
+              <th className="border border-gray-100 p-2 sm:p-3 w-12 text-left font-semibold text-sm sm:text-base">#</th>
+              <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold text-sm sm:text-base">Problem</th>
+              <th className="border border-gray-100 p-2 sm:p-3 w-20 sm:w-24 text-left font-semibold text-sm sm:text-base">Rating</th>
+              <th className="border border-gray-100 p-2 sm:p-3 w-24 sm:w-28 text-left font-semibold text-sm sm:text-base">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -228,17 +232,17 @@ export default function ContestPage() {
               const status = statusMap.get(num)
               const solved = status?.state === 'SOLVED'
               return (
-                <tr key={i}>
-                  <td className="border border-gray-300 p-2">{num}</td>
-                  <td className="border border-gray-300 p-2">
-                    <a href={buildCodeforcesUrl(p.contestID, p.index)} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                <tr key={i} className="hover:bg-gray-50 transition-colors">
+                  <td className="border border-gray-100 p-2 sm:p-3 text-sm sm:text-base">{num}</td>
+                  <td className="border border-gray-100 p-2 sm:p-3 text-sm sm:text-base">
+                    <a href={buildCodeforcesUrl(p.contestID, p.index)} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800">
                       Problem {String.fromCharCode(64 + num)}
                     </a>
                   </td>
-                  <td className="border border-gray-300 p-2" style={{ backgroundColor: getRatingColor(p.rating) }}>
+                  <td className="border border-gray-100 p-2 sm:p-3 font-medium text-sm sm:text-base" style={{ backgroundColor: getRatingColor(p.rating) }}>
                     {p.rating}
                   </td>
-                  <td className="border border-gray-300 p-2" style={{ backgroundColor: solved ? '#D4EDC9' : '#FFE3E3' }}>
+                  <td className="border border-gray-100 p-2 sm:p-3 font-medium text-sm sm:text-base" style={{ backgroundColor: solved ? '#D4EDC9' : '#FFE3E3' }}>
                     {solved ? 'Accepted' : 'Pending'}
                   </td>
                 </tr>
@@ -250,7 +254,7 @@ export default function ContestPage() {
           <button
             onClick={async () => { setEnding(true); await end(); setEnding(false) }}
             disabled={ending}
-            className="rounded bg-red-600 px-6 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+            className="rounded-xl bg-red-600 px-6 py-2 text-white hover:bg-red-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             End Contest
           </button>
@@ -261,8 +265,8 @@ export default function ContestPage() {
 
   if (phase === 'RESULT' && endResult) {
     return (
-      <div className="max-w-md mx-auto rounded border border-gray-200 bg-gray-50 p-6">
-        <h2 className="text-xl font-bold mb-4">Contest Over</h2>
+      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6">Contest Over</h2>
         <div className="space-y-2">
           <p>Solved: {endResult.solved_count}/4</p>
           <p>Performance: {endResult.performance}</p>
@@ -273,7 +277,7 @@ export default function ContestPage() {
         </div>
         <button
           onClick={dismissResult}
-          className="mt-6 rounded bg-pink-500 px-6 py-2 text-white hover:bg-pink-600"
+          className="mt-6 w-full sm:w-auto rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
         >
           Back to Contest
         </button>
@@ -281,5 +285,9 @@ export default function ContestPage() {
     )
   }
 
-  return <div className="p-8">Loading...</div>
+  return (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
+    </div>
+  )
 }

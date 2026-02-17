@@ -31,7 +31,11 @@ function PageViewTracker() {
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAuth()
-  if (loading) return <div className="p-8 text-center">Loading...</div>
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
+    </div>
+  )
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
 }
 

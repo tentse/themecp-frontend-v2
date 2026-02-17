@@ -26,61 +26,63 @@ export default function ContestHistoryPage() {
   }, [skip])
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Contest History</h2>
+    <div className="space-y-6">
+      <h2 className="text-xl sm:text-2xl font-bold">Contest History</h2>
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex items-center justify-center min-h-[200px]">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
+        </div>
       ) : (
-        <>
+        <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300 text-sm">
+            <table className="w-full border-collapse rounded-lg overflow-hidden text-xs sm:text-sm">
               <thead>
-                <tr>
-                  <th className="border border-gray-300 p-2">#</th>
-                  <th className="border border-gray-300 p-2">Date</th>
-                  <th className="border border-gray-300 p-2">Theme</th>
-                  <th className="border border-gray-300 p-2">Level</th>
-                  <th className="border border-gray-300 p-2">P1</th>
-                  <th className="border border-gray-300 p-2">P2</th>
-                  <th className="border border-gray-300 p-2">P3</th>
-                  <th className="border border-gray-300 p-2">P4</th>
-                  <th className="border border-gray-300 p-2">Solved</th>
-                  <th className="border border-gray-300 p-2">Perf</th>
-                  <th className="border border-gray-300 p-2">Rating</th>
-                  <th className="border border-gray-300 p-2">Δ</th>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">#</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Date</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Theme</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Level</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P1</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P2</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P3</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P4</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Solved</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Perf</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Rating</th>
+                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Δ</th>
                 </tr>
               </thead>
               <tbody>
                 {items.map((item, idx) => (
-                  <tr key={idx}>
-                    <td className="border border-gray-300 p-2">{skip + idx + 1}</td>
-                    <td className="border border-gray-300 p-2">{item.date}</td>
-                    <td className="border border-gray-300 p-2">{item.theme}</td>
-                    <td className="border border-gray-300 p-2">{item.level}</td>
-                    <td className="border border-gray-300 p-2" style={{ backgroundColor: getRatingColor(item.p1.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p1.contestID, item.p1.index)} target="_blank" rel="noopener noreferrer" className="underline">
+                  <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                    <td className="border border-gray-100 p-2 sm:p-3">{skip + idx + 1}</td>
+                    <td className="border border-gray-100 p-2 sm:p-3">{item.date}</td>
+                    <td className="border border-gray-100 p-2 sm:p-3">{item.theme}</td>
+                    <td className="border border-gray-100 p-2 sm:p-3">{item.level}</td>
+                    <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p1.rating) }}>
+                      <a href={buildCodeforcesUrl(item.p1.contestID, item.p1.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
                         {item.p1.rating}
                       </a>
                     </td>
-                    <td className="border border-gray-300 p-2" style={{ backgroundColor: getRatingColor(item.p2.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p2.contestID, item.p2.index)} target="_blank" rel="noopener noreferrer" className="underline">
+                    <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p2.rating) }}>
+                      <a href={buildCodeforcesUrl(item.p2.contestID, item.p2.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
                         {item.p2.rating}
                       </a>
                     </td>
-                    <td className="border border-gray-300 p-2" style={{ backgroundColor: getRatingColor(item.p3.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p3.contestID, item.p3.index)} target="_blank" rel="noopener noreferrer" className="underline">
+                    <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p3.rating) }}>
+                      <a href={buildCodeforcesUrl(item.p3.contestID, item.p3.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
                         {item.p3.rating}
                       </a>
                     </td>
-                    <td className="border border-gray-300 p-2" style={{ backgroundColor: getRatingColor(item.p4.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p4.contestID, item.p4.index)} target="_blank" rel="noopener noreferrer" className="underline">
+                    <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p4.rating) }}>
+                      <a href={buildCodeforcesUrl(item.p4.contestID, item.p4.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
                         {item.p4.rating}
                       </a>
                     </td>
-                    <td className="border border-gray-300 p-2">{item.solved_count}</td>
-                    <td className="border border-gray-300 p-2 font-medium" style={{ color: getRatingColor(item.performance) }}>~{item.performance}</td>
-                    <td className="border border-gray-300 p-2">{item.rating_after}</td>
-                    <td className="border border-gray-300 p-2 font-medium" style={{ color: item.rating_delta >= 0 ? 'green' : 'red' }}>
+                    <td className="border border-gray-100 p-2 sm:p-3">{item.solved_count}</td>
+                    <td className="border border-gray-100 p-3 font-medium" style={{ color: getRatingColor(item.performance) }}>~{item.performance}</td>
+                    <td className="border border-gray-100 p-2 sm:p-3">{item.rating_after}</td>
+                    <td className="border border-gray-100 p-3 font-medium" style={{ color: item.rating_delta >= 0 ? 'green' : 'red' }}>
                       {item.rating_delta >= 0 ? '+' : ''}{item.rating_delta}
                     </td>
                   </tr>
@@ -88,18 +90,18 @@ export default function ContestHistoryPage() {
               </tbody>
             </table>
           </div>
-          <div className="mt-4 flex gap-2">
+          <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
             <button
               onClick={() => setSkip((s) => Math.max(0, s - limit))}
               disabled={skip === 0}
-              className="rounded border border-gray-300 px-4 py-2 disabled:opacity-50"
+              className="w-full sm:w-auto rounded-xl border border-gray-100 px-5 py-2 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Previous
             </button>
             <button
               onClick={() => setSkip((s) => s + limit)}
               disabled={skip + limit >= total}
-              className="rounded border border-gray-300 px-4 py-2 disabled:opacity-50"
+              className="w-full sm:w-auto rounded-xl border border-gray-100 px-5 py-2 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Next
             </button>
@@ -107,7 +109,7 @@ export default function ContestHistoryPage() {
               {skip + 1}-{Math.min(skip + limit, total)} of {total}
             </span>
           </div>
-        </>
+        </div>
       )}
     </div>
   )

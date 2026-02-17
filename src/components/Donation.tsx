@@ -5,8 +5,8 @@ import upi from '@/assets/upi.jpeg'
 
 export default function Donation() {
   return (
-    <div className="mt-12 rounded-lg border border-gray-200 bg-gray-50 p-6">
-      <div className="mb-4 text-xl font-bold">🖤 DONATE</div>
+    <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <h3 className="mb-6 text-xl sm:text-2xl font-bold">Donate</h3>
       <div className="mb-6 space-y-2 text-gray-700">
         <p>
           Theme<span className="text-red-600">CP</span> is a non-profit platform, and while donations
@@ -20,31 +20,31 @@ export default function Donation() {
         </p>
         <p>Thank you for your generosity and support!</p>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <div>
-          <img src={RazorpayLogo} alt="Razorpay" className="h-12 object-contain" />
+          <img src={RazorpayLogo} alt="Razorpay" className="h-10 sm:h-12 object-contain" />
           <button
             onClick={() => window.open('https://rzp.io/rzp/aYMLI3hg', '_blank')}
-            className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            className="mt-2 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
           >
             Donate
           </button>
         </div>
         <div>
-          <img src={paypal} alt="PayPal" className="h-12 object-contain" />
+          <img src={paypal} alt="PayPal" className="h-10 sm:h-12 object-contain" />
           <button
             onClick={() => alert('Currently PayPal doesn\'t work. Sorry')}
-            className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            className="mt-2 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
           >
             Donate
           </button>
         </div>
         <div>
-          <img src={usdt} alt="USDT" className="h-24 rounded" />
+          <img src={usdt} alt="USDT" className="h-20 sm:h-24 rounded" />
           <p className="text-sm font-medium">USDT</p>
         </div>
         <div>
-          <img src={upi} alt="UPI" className="h-24 rounded" />
+          <img src={upi} alt="UPI" className="h-20 sm:h-24 rounded" />
           <p className="text-sm font-medium">UPI</p>
         </div>
       </div>

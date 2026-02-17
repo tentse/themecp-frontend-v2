@@ -61,25 +61,25 @@ export default function AddHandle() {
   return (
     <div className="space-y-4">
       <p className="font-medium">Add your Codeforces handle:</p>
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
           value={handleInput}
           onChange={(e) => setHandleInput(e.target.value)}
           placeholder="Codeforces Handle..."
           disabled={verifying}
-          className="flex-1 rounded border border-gray-300 px-3 py-2 disabled:bg-gray-100"
+          className="flex-1 rounded-lg border border-gray-200 px-4 py-3 focus:ring-1 focus:ring-black focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
         />
         <button
           onClick={handleFindProblem}
           disabled={loading}
-          className="rounded bg-pink-500 px-4 py-2 text-white hover:bg-pink-600 disabled:opacity-50"
+          className="w-full sm:w-auto rounded-xl bg-black px-5 py-3 text-white hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {loading ? 'Loading...' : 'Find Problem'}
         </button>
       </div>
       {verificationProblem && (
-        <div className="rounded border border-gray-200 bg-gray-50 p-4 space-y-2">
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 space-y-4">
           <p className="text-sm">
             Submit a <strong>COMPILATION_ERROR</strong> to this problem on Codeforces to verify ownership, then click Verify below.
           </p>
@@ -95,7 +95,7 @@ export default function AddHandle() {
             <button
               onClick={handleVerify}
               disabled={verifying}
-              className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700 disabled:opacity-50"
+              className="w-full sm:w-auto rounded-xl bg-green-600 px-5 py-3 text-white hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {verifying ? 'Verifying...' : 'Verify'}
             </button>

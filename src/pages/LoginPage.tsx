@@ -32,13 +32,17 @@ export default function LoginPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center">Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
+      </div>
+    )
   }
 
   return (
-    <div className="flex flex-col items-center justify-center py-16">
-      <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="mb-6 text-xl font-bold">Sign in to ThemeCP</h2>
+    <div className="flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 px-4">
+      <div className="rounded-xl bg-white p-6 sm:p-8 md:p-10 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 max-w-md w-full">
+        <h2 className="mb-6 sm:mb-8 text-xl sm:text-2xl font-bold">Sign in to ThemeCP</h2>
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
           <GoogleLogin
             onSuccess={handleGoogleSuccess}

@@ -2,13 +2,13 @@ import { NavLink } from 'react-router-dom'
 
 export default function ProfileTabs() {
   return (
-    <div className="flex gap-6 border-b border-gray-300 pb-2 mb-4">
+    <div className="flex gap-4 sm:gap-6 md:gap-8 border-b border-gray-200 pb-4 mb-6 overflow-x-auto text-sm sm:text-base">
       <NavLink
         to="/profile"
         end
         className={({ isActive }) =>
           `font-medium no-underline ${
-            isActive ? 'text-pink-600 border-b-2 border-pink-600' : 'text-gray-600 hover:text-gray-900'
+            isActive ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'
           }`
         }
       >
@@ -18,7 +18,7 @@ export default function ProfileTabs() {
         to="/profile/history"
         className={({ isActive }) =>
           `font-medium no-underline ${
-            isActive ? 'text-pink-600 border-b-2 border-pink-600' : 'text-gray-600 hover:text-gray-900'
+            isActive ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'
           }`
         }
       >
@@ -28,7 +28,7 @@ export default function ProfileTabs() {
         to="/profile/import-export"
         className={({ isActive }) =>
           `font-medium no-underline ${
-            isActive ? 'text-pink-600 border-b-2 border-pink-600' : 'text-gray-600 hover:text-gray-900'
+            isActive ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'
           }`
         }
       >
