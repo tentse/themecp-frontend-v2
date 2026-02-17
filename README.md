@@ -9,7 +9,7 @@ ThemeCP is a competitive programming training platform that integrates with Code
 - **Tailwind CSS v4** for styling
 - **React Router v6** for routing
 - **Highcharts** for rating and theme distribution charts
-- **Google OAuth** (via `@react-oauth/google`) for authentication
+- **Auth0** (via `@auth0/auth0-react`) for authentication
 
 ## Getting Started
 
@@ -41,7 +41,9 @@ npm install
    | Variable | Description | Example |
    |----------|--------------|---------|
    | `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:8000` or `https://api.themecp.com` |
-   | `VITE_GOOGLE_CLIENT_ID` | Google OAuth client ID (Web application) | `xxxx.apps.googleusercontent.com` |
+   | `VITE_AUTH0_DOMAIN` | Auth0 tenant domain | `your-tenant.us.auth0.com` |
+   | `VITE_AUTH0_CLIENT_ID` | Auth0 application client ID | `your-auth0-client-id` |
+   | `VITE_AUTH0_AUDIENCE` | Auth0 API identifier (optional) | `https://your-api-identifier` |
    | `VITE_GA4_ID` | Google Analytics 4 measurement ID (optional) | `G-XXXXXXXXXX` |
 
 3. For local development, the API falls back to `http://localhost:8000` if `VITE_API_BASE_URL` is not set. For production, always set it explicitly.
@@ -146,12 +148,13 @@ The `@/` alias maps to `src/`, e.g. `import { useAuth } from '@/contexts/AuthCon
 
 ### Authentication
 
-1. User clicks "Login" and signs in with Google.
-2. Frontend decodes the Google JWT to obtain the user's email.
-3. `POST /auth/login` with `{ email }`; on 401, `POST /auth/register` with `{ email }`.
-4. JWT is stored in `localStorage` under the key `token`.
-5. Profile is fetched via `GET /users` and stored in AuthContext.
-6. User is redirected to `/profile`.
+1. User clicks "Login" and is redirected to Auth0 Universal Login.
+2. User selects a provider (Google, GitHub, etc.) and authenticates.
+3. Auth0 redirects back with authentication tokens.
+4. Frontend extracts email from Auth0 user and calls `POST /auth/login` with `{ email }`; on 401, `POST /auth/register` with `{ email }`.
+5. Backend JWT is stored in `localStorage` under the key `token`.
+6. Profile is fetched via `GET /users` and stored in AuthContext.
+7. User is redirected to `/profile`.
 
 ### Contest Session (State Machine)
 

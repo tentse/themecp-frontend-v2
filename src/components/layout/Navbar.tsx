@@ -1,12 +1,24 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 import logo from '@/assets/logo1.png'
 import { useAuth } from '@/contexts/AuthContext'
 
 export default function Navbar() {
   const navigate = useNavigate()
+  const { logout: auth0Logout } = useAuth0()
   const { isAuthenticated, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const handleLogout = () => {
+    setMobileMenuOpen(false)
+    logout() // Clear backend token
+    auth0Logout({
+      logoutParams: {
+        returnTo: window.location.origin
+      }
+    })
+  }
 
   return (
     <nav className="flex flex-col md:flex-row md:items-center md:justify-between px-4 sm:px-6 py-4 text-black border-b border-gray-100 bg-white">
@@ -92,7 +104,7 @@ export default function Navbar() {
         </ul>
         {isAuthenticated ? (
           <button
-            onClick={() => { setMobileMenuOpen(false); logout() }}
+            onClick={handleLogout}
             className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto rounded-xl border border-gray-200 px-4 py-2 hover:bg-gray-50 active:scale-95 transition-all"
           >
             Logout

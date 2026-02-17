@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import ReactGA from 'react-ga4'
+import { Auth0Provider } from '@auth0/auth0-react'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { LevelProvider } from '@/contexts/LevelContext'
 import Layout from '@/components/layout/Layout'
@@ -64,8 +65,17 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <Auth0Provider
+      domain={import.meta.env.VITE_AUTH0_DOMAIN || ''}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID || ''}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+      }}
+    >
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Auth0Provider>
   )
 }
