@@ -1,0 +1,67 @@
+import RazorpayLogo from '@/assets/razorpay.svg'
+import paypal from '@/assets/paypal.png'
+import usdt from '@/assets/usdt.jpeg'
+import upi from '@/assets/upi.jpeg'
+
+export default function Donation() {
+  return (
+    <div className="mt-12 rounded-lg border border-gray-200 bg-gray-50 p-6">
+      <div className="mb-4 text-xl font-bold">🖤 DONATE</div>
+      <div className="mb-6 space-y-2 text-gray-700">
+        <p>
+          Theme<span className="text-red-600">CP</span> is a non-profit platform, and while donations
+          and the amount of donation are user&apos;s choice, they are greatly appreciated.
+        </p>
+        <p>
+          The primary reason we ask for your support is to help cover the costs of hosting the
+          website, which the developer personally bears. Your donation will help ensure continued
+          access to the platform, enhance the user experience, and enable many more features and
+          improvements.
+        </p>
+        <p>Thank you for your generosity and support!</p>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <img src={RazorpayLogo} alt="Razorpay" className="h-12 object-contain" />
+          <button
+            onClick={() => window.open('https://rzp.io/rzp/aYMLI3hg', '_blank')}
+            className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Donate
+          </button>
+        </div>
+        <div>
+          <img src={paypal} alt="PayPal" className="h-12 object-contain" />
+          <button
+            onClick={() => alert('Currently PayPal doesn\'t work. Sorry')}
+            className="mt-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Donate
+          </button>
+        </div>
+        <div>
+          <img src={usdt} alt="USDT" className="h-24 rounded" />
+          <p className="text-sm font-medium">USDT</p>
+        </div>
+        <div>
+          <img src={upi} alt="UPI" className="h-24 rounded" />
+          <p className="text-sm font-medium">UPI</p>
+        </div>
+      </div>
+      <p className="mt-4 text-center">
+        <a href="https://discord.gg/49Sva9JrmD" className="text-blue-600 underline hover:no-underline">
+          Contact me @10zin
+        </a>
+      </p>
+      <div className="mt-6">
+        <p className="font-medium mb-2">Contributors</p>
+        <ul className="list-disc list-inside text-sm">
+          <li>SHIVANSH GUPTA</li>
+          <li>IRON MAN</li>
+          <li>TVN Rahul Bharadwaj</li>
+          <li>Ayush Kumar</li>
+        </ul>
+      </div>
+    </div>
+  )
+}
