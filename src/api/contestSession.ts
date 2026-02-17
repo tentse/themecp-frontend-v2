@@ -37,6 +37,6 @@ export async function endSession(): Promise<EndContestResponse> {
   return apiPost<EndContestResponse>('/contest-session/end');
 }
 
-export async function getHistory(skip = 0, limit = 20): Promise<ContestHistoryResponse> {
+export async function getHistory(skip = 0, limit = 50): Promise<ContestHistoryResponse> {
   return apiGet<ContestHistoryResponse>('/contest-session/history', { skip, limit });
 }

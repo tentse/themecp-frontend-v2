@@ -9,12 +9,25 @@ interface RatingGraphProps {
 }
 
 const Y_AXIS_REF = [0, 1200, 1400, 1600, 1900, 2100, 2300, 2400, 2600, 3000, 4500]
+const COMPRESS_THRESHOLD = 1200
+const COMPRESS_FACTOR = 0.70
+
+function toDisplayRating(rating: number): number {
+  if (rating <= COMPRESS_THRESHOLD) return rating * COMPRESS_FACTOR
+  return COMPRESS_THRESHOLD * COMPRESS_FACTOR + (rating - COMPRESS_THRESHOLD)
+}
+
+function toActualRating(displayRating: number): number {
+  const compressedTop = COMPRESS_THRESHOLD * COMPRESS_FACTOR
+  if (displayRating <= compressedTop) return displayRating / COMPRESS_FACTOR
+  return COMPRESS_THRESHOLD + (displayRating - compressedTop)
+}
 
 export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraphProps) {
   const [options, setOptions] = useState<Highcharts.Options>({
     chart: { 
       type: 'line', 
-      height: 550,
+      height: 380,
       zoomType: 'x',
       backgroundColor: '#ffffff',
       resetZoomButton: {
@@ -46,8 +59,13 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
     yAxis: {
       min: 0,
       title: { text: 'Rating' },
-      tickPositions: Y_AXIS_REF,
+      tickPositions: Y_AXIS_REF.map(toDisplayRating),
       plotBands: [],
+      labels: {
+        formatter: function() {
+          return Math.round(toActualRating(Number(this.value))).toString()
+        }
+      },
       gridLineWidth: 1,
       gridLineColor: '#e0e0e0',
       crosshair: {
@@ -58,7 +76,6 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
     },
     plotOptions: {
       line: {
-        step: 'left',
         lineWidth: 2
       }
     },
@@ -82,13 +99,16 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
         this.points?.forEach((point) => {
           const color = point.series.color as string
           const prevPoint = point.series.data[point.point.index - 1]
-          const prevValue = prevPoint ? (prevPoint.y as number) : (point.y as number)
-          const change = (point.y as number) - prevValue
+          const currentValue = Math.round(toActualRating(point.y as number))
+          const prevValue = prevPoint
+            ? Math.round(toActualRating(prevPoint.y as number))
+            : currentValue
+          const change = currentValue - prevValue
           const arrow = change > 0 ? '↑' : change < 0 ? '↓' : ''
           const changeColor = change > 0 ? '#00aa00' : change < 0 ? '#ff0000' : '#888888'
           
           tooltip += `<div style="margin-top: 6px;">
-            <span style="color: ${color};">●</span> ${point.series.name}: <b>${point.y}</b>
+            <span style="color: ${color};">●</span> ${point.series.name}: <b>${currentValue}</b>
             ${change !== 0 ? `<span style="color: ${changeColor};"> ${arrow}${Math.abs(change)}</span>` : ''}
           </div>`
         })
@@ -144,7 +164,10 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
         maxRatingByDate.set(item.date, newVal)
       }
     })
-    const themeCpData = Array.from(maxRatingByDate, ([date, value]) => [Date.parse(date), value] as [number, number])
+    const themeCpData = Array.from(
+      maxRatingByDate,
+      ([date, value]) => [Date.parse(date), toDisplayRating(value)] as [number, number]
+    )
 
     const cfMaxByDate = new Map<string, number>()
     cfData.forEach((item) => {
@@ -154,7 +177,10 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
         cfMaxByDate.set(item.date, newVal)
       }
     })
-    const cfChartData = Array.from(cfMaxByDate, ([date, value]) => [Date.parse(date), value] as [number, number])
+    const cfChartData = Array.from(
+      cfMaxByDate,
+      ([date, value]) => [Date.parse(date), toDisplayRating(value)] as [number, number]
+    )
 
     // Calculate maximum rating from both data sources
     const themeCpMaxRating = contestHistory.length > 0 
@@ -172,6 +198,7 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
       dynamicTicks.push(maxRating)
       dynamicTicks.sort((a, b) => a - b)
     }
+    const displayTicks = dynamicTicks.map(toDisplayRating)
 
     // Filter plot bands to only show relevant ranges
     const plotBandsData = [
@@ -189,8 +216,9 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
     const filteredPlotBands = plotBandsData
       .filter(band => band.from < maxRating)
       .map(band => ({
-        ...band,
-        to: Math.min(band.to, maxRating)
+        color: band.color,
+        from: toDisplayRating(band.from),
+        to: toDisplayRating(Math.min(band.to, maxRating))
       }))
 
     setOptions((prev) => ({
@@ -198,9 +226,14 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
       yAxis: {
         min: 0,
         title: { text: 'Rating' },
-        max: maxRating,
-        tickPositions: dynamicTicks,
+        max: toDisplayRating(maxRating),
+        tickPositions: displayTicks,
         plotBands: filteredPlotBands,
+        labels: {
+          formatter: function() {
+            return Math.round(toActualRating(Number(this.value))).toString()
+          }
+        },
         gridLineWidth: 1,
         gridLineColor: '#e0e0e0',
         crosshair: {

@@ -9,7 +9,7 @@ export default function ContestHistoryPage() {
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(0)
   const [loading, setLoading] = useState(true)
-  const limit = 20
+  const limit = 50
 
   useEffect(() => {
     let cancelled = false
