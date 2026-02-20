@@ -1,45 +1,306 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { useLevel } from '@/contexts/LevelContext'
 import { useContestSession } from '@/hooks/useContestSession'
 import { buildCodeforcesUrl } from '@/utils/codeforces'
 import { getRatingColor } from '@/utils/rating'
-import { THEME_TAGS } from '@/constants/tags'
-import CountdownTimer from '@/components/CountdownTimer'
+import type { ContestSessionOutput, ProblemDetail } from '@/api/types'
+
+type Phase = 'NO_SESSION' | 'REVIEW'
+
+function RatingBox({ label, rating }: Readonly<{ label: string; rating: number }>) {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="text-xs font-medium text-gray-600">{label}</div>
+      <div
+        className="mt-2 rounded-lg px-3 py-3 text-center font-mono text-lg font-semibold"
+        style={{ backgroundColor: getRatingColor(rating) }}
+      >
+        {rating}
+      </div>
+    </div>
+  )
+}
+
+function Spinner() {
+  return (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
+    </div>
+  )
+}
+
+function PageCard({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 rounded-2xl bg-white shadow-sm">
+      {children}
+    </div>
+  )
+}
+
+function NoHandleGate({ onGoProfile }: Readonly<{ onGoProfile: () => void }>) {
+  return (
+    <PageCard>
+      <div className="text-center">
+        <p className="text-red-600 font-medium">Please add your Codeforces handle first.</p>
+        <button
+          onClick={onGoProfile}
+          className="mt-4 rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
+        >
+          Go to Profile
+        </button>
+      </div>
+    </PageCard>
+  )
+}
+
+function ErrorCard({ error }: Readonly<{ error: string }>) {
+  return (
+    <PageCard>
+      <p className="text-red-600">{error}</p>
+    </PageCard>
+  )
+}
+
+function NoSessionView(props: Readonly<{
+  levelsLoaded: boolean
+  selectedLevel: number | ''
+  onSelectedLevelChange: (level: number | '') => void
+  suggestedLevel: number
+  selectedTheme: string
+  onSelectedThemeChange: (theme: string) => void
+  duration: number
+  isLevelValid: boolean
+  levelObj: { p1_rating: number; p2_rating: number; p3_rating: number; p4_rating: number } | undefined
+  creating: boolean
+  onCreate: () => void
+}>) {
+  const handleLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value
+    if (v === '') props.onSelectedLevelChange('')
+    else {
+      const n = Number(v)
+      if (!Number.isNaN(n)) props.onSelectedLevelChange(n)
+    }
+  }
+
+  return (
+    <PageCard>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold">Create contest</h2>
+          <p className="mt-1 text-sm text-gray-600">
+            Pick a level, preview the expected problem ratings, then generate your contest.
+          </p>
+        </div>
+        <div className="text-sm text-gray-600">
+          Suggested level:{' '}
+          <span className="font-mono font-semibold text-gray-900">{props.suggestedLevel}</span>
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-col gap-6">
+        <div>
+          <label htmlFor="contest-level" className="block text-sm font-medium text-gray-700">
+            Contest level
+          </label>
+          <input
+            id="contest-level"
+            type="number"
+            inputMode="numeric"
+            value={props.selectedLevel === '' ? '' : props.selectedLevel}
+            onChange={handleLevelChange}
+            className="mt-2 w-full max-w-xs rounded-xl border border-gray-200 px-4 py-3 focus:ring-1 focus:ring-black focus:outline-none"
+            placeholder="e.g. 20"
+          />
+          <div className="mt-2 text-sm text-gray-600">
+            Refer the contest level sheet for details.{' '}
+            <Link to="/levels" className="font-medium text-blue-600 underline hover:text-blue-800">
+              Level sheet
+            </Link>
+          </div>
+          {props.levelsLoaded && !props.isLevelValid && props.selectedLevel !== '' && (
+            <div className="mt-2 text-sm text-red-600">
+              Level not found. Please enter a valid level from the level sheet.
+            </div>
+          )}
+        </div>
+
+        <div>
+          <div className="block text-sm font-medium text-gray-700">Theme</div>
+          <div className="mt-2 rounded-xl border border-gray-200 bg-white p-3 max-w-xs">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                name="theme"
+                value="mixed"
+                checked={props.selectedTheme === 'mixed'}
+                onChange={() => props.onSelectedThemeChange('mixed')}
+                className="h-4 w-4"
+              />
+              <span className="text-sm font-medium text-gray-900">Mixed</span>
+              <span className="text-xs text-gray-500">(only option for now)</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 max-w-xs">
+          <div className="text-sm font-medium text-gray-700">Duration</div>
+          <div className="mt-1 font-mono text-lg font-semibold text-gray-900">{props.duration} min</div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
+          <div>
+            <div className="text-sm font-medium text-gray-700">Expected problem ratings</div>
+            <div className="mt-1 text-xs text-gray-500">Preview based on the selected contest level preset.</div>
+          </div>
+
+          {props.levelObj ? (
+            <div className="mt-4 flex flex-row flex-wrap gap-3">
+              <RatingBox label="P1" rating={props.levelObj.p1_rating} />
+              <RatingBox label="P2" rating={props.levelObj.p2_rating} />
+              <RatingBox label="P3" rating={props.levelObj.p3_rating} />
+              <RatingBox label="P4" rating={props.levelObj.p4_rating} />
+            </div>
+          ) : (
+            <div className="mt-4 rounded-xl border border-dashed border-gray-200 p-6 text-sm text-gray-600">
+              Enter a valid level to preview expected ratings.
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={props.onCreate}
+          disabled={props.creating || !props.isLevelValid}
+          className="w-full max-w-xs rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+        >
+          {props.creating ? 'Generating...' : 'Generate contest'}
+        </button>
+      </div>
+    </PageCard>
+  )
+}
+
+function ReviewView(props: Readonly<{
+  session: ContestSessionOutput
+  starting: boolean
+  onStart: () => void
+}>) {
+  const problems: ProblemDetail[] = [props.session.p1, props.session.p2, props.session.p3, props.session.p4]
+  return (
+    <PageCard>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold">Review problems</h2>
+          <p className="mt-1 text-sm text-gray-600">
+            Preview the generated problems. When you’re ready, start the contest.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700">
+            Level: <span className="font-mono">{props.session.level}</span>
+          </span>
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700">
+            Theme: <span className="font-mono">{props.session.theme}</span>
+          </span>
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700">
+            Duration: <span className="font-mono">{props.session.duration_in_min}m</span>
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-col gap-4">
+        {problems.map((p, i) => {
+          const label = `P${i + 1}`
+          const href = buildCodeforcesUrl(p.contestId, p.index)
+          return (
+            <div
+              key={`${p.contestId}-${p.index}-${i}`}
+              className="flex flex-row flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5"
+            >
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex-1 min-w-[140px] flex items-start justify-between gap-4"
+              >
+                <div>
+                  <div className="text-sm font-medium text-gray-700">{label}</div>
+                  <div className="mt-1 font-mono text-xs text-gray-500">
+                    {p.contestId}/{p.index}
+                  </div>
+                </div>
+                <div
+                  className="rounded-xl px-3 py-2 font-mono text-lg font-bold"
+                  style={{ backgroundColor: getRatingColor(p.rating) }}
+                >
+                  {p.rating}
+                </div>
+              </a>
+              <button
+                type="button"
+                disabled
+                title="Coming soon"
+                className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-medium text-gray-500 cursor-not-allowed"
+              >
+                Re-roll (coming soon)
+              </button>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            disabled
+            title="Coming soon"
+            className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-500 cursor-not-allowed"
+          >
+            Regenerate contest (coming soon)
+          </button>
+        </div>
+        <div className="text-sm text-gray-600">
+          Contest starts 15 seconds after you press start.
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
+        <button
+          onClick={props.onStart}
+          disabled={props.starting}
+          className="w-full sm:w-auto rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+        >
+          {props.starting ? 'Starting...' : 'Start contest'}
+        </button>
+      </div>
+    </PageCard>
+  )
+}
 
 export default function ContestPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { levels } = useLevel()
-  const {
-    phase,
-    session,
-    startResponse,
-    problemStatuses,
-    endResult,
-    loading,
-    error,
-    create,
-    start,
-    onCountdownExpire,
-    refresh,
-    end,
-    dismissResult,
-  } = useContestSession()
+  const { phase, session, loading, error, create, start } = useContestSession()
 
-  const [selectedLevel, setSelectedLevel] = useState<number>(levels[0]?.level ?? 20)
-  const [selectedTheme, setSelectedTheme] = useState<string>('greedy')
+  const [selectedLevel, setSelectedLevel] = useState<number | ''>('')
+  const [selectedTheme, setSelectedTheme] = useState<string>('mixed')
   const [creating, setCreating] = useState(false)
   const [starting, setStarting] = useState(false)
-  const [ending, setEnding] = useState(false)
-  const [showThemeDropdown, setShowThemeDropdown] = useState(false)
 
-  const levelObj = levels.find((l) => l.level === selectedLevel)
+  const levelObj = useMemo(
+    () => (selectedLevel === '' ? undefined : levels.find((l) => l.level === selectedLevel)),
+    [levels, selectedLevel]
+  )
   const duration = levelObj?.duration_in_min ?? 120
+  const isLevelValid = !!levelObj
 
-  const suggestedLevel = (() => {
-    const rating = user?.last_contest_rating ?? 1400
+  const suggestedLevel = useMemo(() => {
+    if (levels.length === 0) return 20
+    const rating = user?.rating ?? 1400
     let best = levels[0]
     let bestDiff = Infinity
     for (const l of levels) {
@@ -50,23 +311,20 @@ export default function ContestPage() {
       }
     }
     return best?.level ?? 20
-  })()
+  }, [levels, user?.rating])
 
   const runCreate = async () => {
-    if (!levelObj) {
-      alert('Please select a contest level')
-      return
-    }
+    if (!isLevelValid || !levelObj) return
     setCreating(true)
     try {
-      await create(selectedLevel, selectedTheme, duration)
+      await create(levelObj.level, selectedTheme)
     } finally {
       setCreating(false)
     }
   }
 
   const runStart = async () => {
-    if (!window.confirm("Once contest started you can't stop the contest. ARE YOU READY TO START?")) return
+    if (!globalThis.confirm("Once contest started you can't stop the contest. ARE YOU READY TO START?")) return
     setStarting(true)
     try {
       await start()
@@ -76,218 +334,44 @@ export default function ContestPage() {
   }
 
   if (!user?.codeforces_handle) {
-    return (
-      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow text-center">
-        <p className="text-red-600 font-medium">Please add your Codeforces handle first.</p>
-        <button onClick={() => navigate('/profile')} className="mt-4 rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all">
-          Go to Profile
-        </button>
-      </div>
-    )
-  }
-
-  if (loading && phase === 'NO_SESSION') {
-    return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
-      </div>
-    )
+    return <NoHandleGate onGoProfile={() => navigate('/profile')} />
   }
 
   if (error) {
-    return (
-      <div className="p-8">
-        <p className="text-red-600">{error}</p>
-      </div>
-    )
+    return <ErrorCard error={error} />
+  }
+
+  if (loading) {
+    return <Spinner />
   }
 
   if (phase === 'NO_SESSION') {
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
-        <div className="mb-4">
-          <label className="block font-medium mb-1">Contest Level</label>
-          <input
-            type="number"
-            value={selectedLevel}
-            onChange={(e) => setSelectedLevel(Number(e.target.value))}
-            className="rounded-lg border border-gray-200 px-4 py-3 w-full sm:w-28 focus:ring-1 focus:ring-black focus:outline-none"
-          />
-        </div>
-        <p className="text-sm text-gray-600 mb-2">Suggested level: {suggestedLevel}</p>
-        <p className="text-sm text-red-600 mb-4">
-          <button onClick={() => navigate('/levels')} className="underline">Level sheet</button> for level details
-        </p>
-        <div className="mb-4">
-          <button
-            onClick={() => setShowThemeDropdown(!showThemeDropdown)}
-            className="w-full sm:w-auto rounded-lg border border-gray-200 px-4 py-3 bg-white hover:bg-gray-50 focus:ring-1 focus:ring-black focus:outline-none transition-colors"
-          >
-            Theme: {selectedTheme}
-          </button>
-          {showThemeDropdown && (
-            <div className="mt-2 border border-gray-200 rounded-lg shadow-md max-h-48 overflow-y-auto bg-white">
-              {THEME_TAGS.map((t) => (
-                <div
-                  key={t}
-                  onClick={() => { setSelectedTheme(t); setShowThemeDropdown(false) }}
-                  className={`px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors ${selectedTheme === t ? 'bg-gray-200 font-medium' : ''}`}
-                >
-                  {t}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <p className="mb-4">Duration: {duration} min</p>
-        <button
-          onClick={runCreate}
-          disabled={creating}
-          className="w-full sm:w-auto rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-        >
-          {creating ? 'Creating...' : 'Create Contest'}
-        </button>
-      </div>
+      <NoSessionView
+        levelsLoaded={levels.length > 0}
+        selectedLevel={selectedLevel}
+        onSelectedLevelChange={setSelectedLevel}
+        suggestedLevel={suggestedLevel}
+        selectedTheme={selectedTheme}
+        onSelectedThemeChange={setSelectedTheme}
+        duration={duration}
+        isLevelValid={isLevelValid}
+        levelObj={levelObj}
+        creating={creating}
+        onCreate={runCreate}
+      />
     )
   }
 
   if (phase === 'REVIEW' && session) {
-    const problems = [session.p1, session.p2, session.p3, session.p4]
     return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
-        <h2 className="text-xl sm:text-2xl font-bold mb-6">Review Problems</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
-          {problems.map((p, i) => (
-            <a
-              key={i}
-              href={buildCodeforcesUrl(p.contestID, p.index)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded border p-4 text-center font-medium hover:bg-gray-50"
-              style={{ backgroundColor: getRatingColor(p.rating) }}
-            >
-              Problem {i + 1}: {p.rating}
-            </a>
-          ))}
-        </div>
-        <p className="mb-4">Duration: {session.duration_in_min} min</p>
-        <button
-          onClick={runStart}
-          disabled={starting}
-          className="w-full sm:w-auto rounded-xl bg-green-600 px-6 py-3 text-white font-medium hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-        >
-          {starting ? 'Starting...' : 'Start Contest'}
-        </button>
-      </div>
+      <ReviewView
+        session={session}
+        starting={starting}
+        onStart={runStart}
+      />
     )
   }
 
-  if (phase === 'COUNTDOWN' && startResponse) {
-    const targetMs = startResponse.starts_at * 1000
-    return (
-      <div className="max-w-2xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow text-center">
-        <h2 className="text-xl sm:text-2xl font-bold mb-6">Contest starts in</h2>
-        <CountdownTimer targetTimestamp={targetMs} onExpire={onCountdownExpire} className="text-4xl font-mono" />
-      </div>
-    )
-  }
-
-  if (phase === 'RUNNING' && session && startResponse) {
-    const problems = [session.p1, session.p2, session.p3, session.p4]
-    const endMs = startResponse.starts_at * 1000 + session.duration_in_min * 60 * 1000
-    const statusMap = new Map(problemStatuses.map((s) => [s.problem_number, s]))
-
-    return (
-      <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
-        <div className="rounded-lg border-2 border-gray-200 bg-gray-50 p-3 sm:p-4 mb-6">
-          <div className="text-red-600 font-medium mb-2">NOTE:</div>
-          <ul className="text-sm space-y-1">
-            <li>1. Solve problems in order (P1 before P2, etc.).</li>
-            <li>2. Press Refresh to update solve status.</li>
-          </ul>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
-          <span className="text-lg sm:text-xl font-mono">
-            Time: <CountdownTimer targetTimestamp={endMs} onExpire={end} />
-          </span>
-          <button
-            onClick={refresh}
-            className="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 active:scale-95 transition-all"
-          >
-            Refresh
-          </button>
-        </div>
-        <table className="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="border border-gray-100 p-2 sm:p-3 w-12 text-left font-semibold text-sm sm:text-base">#</th>
-              <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold text-sm sm:text-base">Problem</th>
-              <th className="border border-gray-100 p-2 sm:p-3 w-20 sm:w-24 text-left font-semibold text-sm sm:text-base">Rating</th>
-              <th className="border border-gray-100 p-2 sm:p-3 w-24 sm:w-28 text-left font-semibold text-sm sm:text-base">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {problems.map((p, i) => {
-              const num = i + 1
-              const status = statusMap.get(num)
-              const solved = status?.state === 'SOLVED'
-              return (
-                <tr key={i} className="hover:bg-gray-50 transition-colors">
-                  <td className="border border-gray-100 p-2 sm:p-3 text-sm sm:text-base">{num}</td>
-                  <td className="border border-gray-100 p-2 sm:p-3 text-sm sm:text-base">
-                    <a href={buildCodeforcesUrl(p.contestID, p.index)} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800">
-                      Problem {String.fromCharCode(64 + num)}
-                    </a>
-                  </td>
-                  <td className="border border-gray-100 p-2 sm:p-3 font-medium text-sm sm:text-base" style={{ backgroundColor: getRatingColor(p.rating) }}>
-                    {p.rating}
-                  </td>
-                  <td className="border border-gray-100 p-2 sm:p-3 font-medium text-sm sm:text-base" style={{ backgroundColor: solved ? '#D4EDC9' : '#FFE3E3' }}>
-                    {solved ? 'Accepted' : 'Pending'}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-        <div className="mt-4">
-          <button
-            onClick={async () => { setEnding(true); await end(); setEnding(false) }}
-            disabled={ending}
-            className="rounded-xl bg-red-600 px-6 py-2 text-white hover:bg-red-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
-            End Contest
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  if (phase === 'RESULT' && endResult) {
-    return (
-      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
-        <h2 className="text-xl sm:text-2xl font-bold mb-6">Contest Over</h2>
-        <div className="space-y-2">
-          <p>Solved: {endResult.solved_count}/4</p>
-          <p>Performance: {endResult.performance}</p>
-          <p>Rating: {endResult.rating_before} → {endResult.rating_after}</p>
-          <p style={{ color: endResult.rating_delta >= 0 ? 'green' : 'red' }}>
-            Δ {endResult.rating_delta >= 0 ? '+' : ''}{endResult.rating_delta}
-          </p>
-        </div>
-        <button
-          onClick={dismissResult}
-          className="mt-6 w-full sm:w-auto rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
-        >
-          Back to Contest
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="flex items-center justify-center min-h-[200px]">
-      <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
-    </div>
-  )
+  return <Spinner />
 }

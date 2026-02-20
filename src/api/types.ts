@@ -8,7 +8,7 @@ export interface UserResponse {
   id: string;
   email: string;
   codeforces_handle: string | null;
-  last_contest_rating: number | null;
+  rating: number | null;
   max_contest_rating: number | null;
   best_performance: number | null;
   contest_attempts: number;
@@ -34,82 +34,83 @@ export interface ContestLevel {
   p4_rating: number;
 }
 
-// Contest Session
+// Contest Session (v2)
+export type ContestStatus = 'REVIEW' | 'RUNNING' | 'FINISHED';
+export type ProblemStatus = 'UNSOLVED' | 'SOLVED' | 'UPSOLVED';
+
+/** Normalized: always use contestId. Backend may send contestID or contestId. */
 export interface ProblemDetail {
-  contestID: string;
+  contestId: string;
   index: string;
   rating: number;
 }
 
-export type ContestSessionStatus = 'REVIEW' | 'RUNNING' | 'FINISHED';
-
-export interface ContestSession {
-  id: string;
-  user_id: string;
+export interface ContestSessionInput {
   level: number;
   theme: string;
+}
+
+export interface ContestSessionOutput {
+  id: string;
+  status: ContestStatus;
   duration_in_min: number;
-  status: ContestSessionStatus;
+  user_id: string;
+  starts_at: number | null;
+  ends_at: number | null;
+  level: number;
+  theme: string;
   p1: ProblemDetail;
   p2: ProblemDetail;
   p3: ProblemDetail;
   p4: ProblemDetail;
 }
 
-export interface CreateContestSessionRequest {
-  level: number;
-  theme: string;
-  duration_in_min: number;
+export interface ContestSessionProblemsStatus {
+  contest_session_id: string;
+  starts_at: number;
+  ends_at: number;
+  p1: ProblemDetail;
+  p2: ProblemDetail;
+  p3: ProblemDetail;
+  p4: ProblemDetail;
+  p1_status: ProblemStatus;
+  p2_status: ProblemStatus;
+  p3_status: ProblemStatus;
+  p4_status: ProblemStatus;
 }
 
-export interface StartContestResponse {
-  session_id: string;
-  status: 'RUNNING';
-  starts_at: number; // Unix timestamp seconds
-  duration_in_min: number;
-}
-
-export interface RefreshProblemStatus {
-  problem_number: number;
-  state: 'UNSOLVED' | 'SOLVED';
-  accepted_at: string | null;
-  solved_in_min: number | null;
-}
-
-export interface EndContestResponse {
-  session_id: string;
-  status: 'FINISHED';
-  solved_count: number;
-  performance: number;
-  rating_before: number;
-  rating_after: number;
-  rating_delta: number;
-}
-
-// Contest History
+// Contest History (v2)
 export interface ContestHistoryItem {
+  session_id: string;
   date: string;
   level: number;
   theme: string;
   duration_in_min: number;
-  solved_count: number;
   performance: number;
-  rating_after: number;
+  rating: number;
   rating_delta: number;
   p1: ProblemDetail;
   p2: ProblemDetail;
   p3: ProblemDetail;
   p4: ProblemDetail;
+  p1_status: ProblemStatus;
+  p2_status: ProblemStatus;
+  p3_status: ProblemStatus;
+  p4_status: ProblemStatus;
 }
 
-export interface ContestHistoryResponse {
+export interface ContestHistoryOutput {
   items: ContestHistoryItem[];
   skip: number;
   limit: number;
   total: number;
 }
 
+// Legacy alias
+export type ContestSession = ContestSessionOutput;
+
 // Error
 export interface ApiError {
   detail: string;
+  status: number;
 }

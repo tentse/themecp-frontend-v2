@@ -5,9 +5,9 @@ import upi from '@/assets/upi.jpeg'
 
 export default function Donation() {
   return (
-    <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+    <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
       <h3 className="mb-6 text-xl sm:text-2xl font-bold">Donate</h3>
-      <div className="mb-6 space-y-2 text-gray-700">
+      <div className="mb-6 space-y-2 text-gray-700 font-bold">
         <p>
           Theme<span className="text-red-600">CP</span> is a non-profit platform, and while donations
           and the amount of donation are user&apos;s choice, they are greatly appreciated.
@@ -21,31 +21,13 @@ export default function Donation() {
         <p>Thank you for your generosity and support!</p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-        <div>
-          <img src={RazorpayLogo} alt="Razorpay" className="h-10 sm:h-12 object-contain" />
-          <button
-            onClick={() => window.open('https://rzp.io/rzp/aYMLI3hg', '_blank')}
-            className="mt-2 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
-          >
-            Donate
-          </button>
+        <div className="flex flex-col items-center">
+          <img src={usdt} alt="USDT" className="h-36 sm:h-44 md:h-52 rounded" />
+          <p className="text-sm font-medium mt-2 text-center">USDT</p>
         </div>
-        <div>
-          <img src={paypal} alt="PayPal" className="h-10 sm:h-12 object-contain" />
-          <button
-            onClick={() => alert('Currently PayPal doesn\'t work. Sorry')}
-            className="mt-2 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all"
-          >
-            Donate
-          </button>
-        </div>
-        <div>
-          <img src={usdt} alt="USDT" className="h-20 sm:h-24 rounded" />
-          <p className="text-sm font-medium">USDT</p>
-        </div>
-        <div>
-          <img src={upi} alt="UPI" className="h-20 sm:h-24 rounded" />
-          <p className="text-sm font-medium">UPI</p>
+        <div className="flex flex-col items-center">
+          <img src={upi} alt="UPI" className="h-36 sm:h-44 md:h-52 rounded" />
+          <p className="text-sm font-medium mt-2 text-center">UPI</p>
         </div>
       </div>
       <p className="mt-4 text-center">

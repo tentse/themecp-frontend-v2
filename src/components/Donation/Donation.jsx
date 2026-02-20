@@ -1,4 +1,3 @@
-import React from 'react'
 import './Donation.css'
 import Razorpay_logo from '../../assets/razorpay.svg'
 import paypal from '../../assets/paypal.png'
@@ -19,7 +18,7 @@ const Donation = () => {
             🖤 DONATE
         </div>
         <div className='description-container'>
-            <p>Theme<span style={{color:'red', fontSize:'16.5px', fontFamily:'inherit'}}>CP</span> is a non-profit platform, and while donations and the amount of donation are user's choice, but they are greatly appreciated.</p>
+            <p>Theme<span style={{color:'red', fontSize:'16.5px', fontFamily:'inherit'}}>CP</span> is a non-profit platform, and while donations and the amount of donation are user&apos;s choice, but they are greatly appreciated.</p>
             <p>The primary reason we ask for your support is to help cover the costs of hosting the website, which the developer personally bears. Your donation will help ensure continued access to the platform, enhance the user experience, and able to bring much more features and improvements.</p>
             <p>Thank you for your generosity and support!</p>
         </div>

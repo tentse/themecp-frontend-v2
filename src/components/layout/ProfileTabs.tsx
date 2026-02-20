@@ -7,7 +7,7 @@ export default function ProfileTabs() {
         to="/profile"
         end
         className={({ isActive }) =>
-          `font-medium no-underline ${
+          `font-medium no-underline cursor-pointer ${
             isActive ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'
           }`
         }
@@ -17,7 +17,7 @@ export default function ProfileTabs() {
       <NavLink
         to="/profile/history"
         className={({ isActive }) =>
-          `font-medium no-underline ${
+          `font-medium no-underline cursor-pointer ${
             isActive ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'
           }`
         }
@@ -27,7 +27,7 @@ export default function ProfileTabs() {
       <NavLink
         to="/profile/import-export"
         className={({ isActive }) =>
-          `font-medium no-underline ${
+          `font-medium no-underline cursor-pointer ${
             isActive ? 'text-black border-b-2 border-black' : 'text-gray-600 hover:text-gray-900'
           }`
         }
