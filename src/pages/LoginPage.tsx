@@ -21,11 +21,11 @@ export default function LoginPage() {
   }, [auth0Loading, auth0Authenticated, loading, isAuthenticated, auth0Error])
 
   useEffect(() => {
-    if (!loading && !auth0Loading && isAuthenticated && auth0Authenticated) {
+    if (!loading && isAuthenticated) {
       console.log('Redirecting to /profile')
       navigate('/profile')
     }
-  }, [loading, auth0Loading, isAuthenticated, auth0Authenticated, navigate])
+  }, [loading, isAuthenticated, navigate])
 
   const handleLogin = async () => {
     console.log('Login button clicked')
@@ -48,26 +48,28 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 px-4">
       <div className="rounded-xl bg-white p-6 sm:p-8 md:p-10 shadow-sm max-w-md w-full">
-        <h2 className="mb-6 sm:mb-8 text-xl sm:text-2xl font-bold">Sign in to ThemeCP</h2>
-        <button
-          onClick={handleLogin}
-          className="w-full bg-black text-white rounded-lg px-6 py-3 font-medium hover:bg-gray-800 transition-colors cursor-pointer"
-        >
-          Sign In with Auth0
-        </button>
-        <p className="mt-4 text-sm text-gray-600 text-center">
-          Sign in with Google, GitHub, or other providers
-        </p>
-        {auth0Error && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-            Error: {auth0Error.message}
-          </div>
-        )}
-        {backendError && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-            Error: {backendError}
-          </div>
-        )}
+        <div className="flex flex-col items-center justify-center min-h-[320px] h-full my-auto">
+          <h2 className="mb-6 sm:mb-8 text-xl sm:text-2xl font-bold text-center">Sign in to ThemeCP</h2>
+          <button
+            onClick={handleLogin}
+            className="w-full bg-black text-white rounded-lg px-6 py-3 font-medium hover:bg-gray-800 transition-colors cursor-pointer"
+          >
+            Sign In / Log in
+          </button>
+          <p className="mt-4 text-sm text-gray-600 text-center">
+            Sign in with Google, GitHub, or other providers
+          </p>
+          {auth0Error && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+              Error: {auth0Error.message}
+            </div>
+          )}
+          {backendError && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+              Error: {backendError}
+            </div>
+          )}
+        </div>
       </div>
       <p className="mt-6 text-center text-sm text-gray-600">
         <NavLink to="/privacy-policy" className="underline hover:no-underline cursor-pointer">

@@ -168,7 +168,7 @@ The `@/` alias maps to `src/`, e.g. `import { useAuth } from '@/contexts/AuthCon
 
 ### Codeforces Handle Verification
 
-1. User enters their Codeforces handle and clicks "Find Problem".
+1. User enters their Codeforces handle and clicks "Get Problem".
 2. Frontend calls `GET /users/handle-verification-cf-problem?codeforces_handle=<handle>`.
 3. User opens the returned problem link and submits code that results in `COMPILATION_ERROR`.
 4. User returns and clicks "Verify".

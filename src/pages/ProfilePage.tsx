@@ -22,7 +22,7 @@ export default function ProfilePage() {
     let cancelled = false
     const load = async () => {
       try {
-        const res = await getHistory(0, 100)
+        const res = await getHistory(0, 50)
         if (!cancelled) setContestHistory(res.items)
       } finally {
         if (!cancelled) setHistoryLoading(false)
@@ -66,7 +66,7 @@ export default function ProfilePage() {
     </div>
   )
 
-  const rating = user.last_contest_rating ?? 0
+  const rating = user.rating ?? 0
   const maxRating = user.max_contest_rating ?? 0
   const bestPerf = user.best_performance ?? 0
 
@@ -89,18 +89,20 @@ export default function ProfilePage() {
           <p className="flex items-center gap-2 text-sm sm:text-base">
             <img src={ratingPic} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />
             Contest Rating:{' '}
-            <span className="font-mono" style={{ color: getRatingColor(rating) }}>{user.last_contest_rating ?? '—'}</span>
+            <span className="font-mono" style={{ color: getRatingColor(rating) }}>{user.rating ?? '—'}</span>
             <span className="text-sm text-gray-600">
               (max. {user.rating_label}, <span className="font-mono">{maxRating}</span>)
             </span>
           </p>
           <p className="flex items-center gap-2 text-sm sm:text-base">
             <img src={star} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />
-            Best Performance: <span className="font-mono" style={{ color: getRatingColor(bestPerf) }}>{bestPerf || '—'}</span>
+            <span>Best Performance:</span>
+            <span className="font-mono" style={{ color: getRatingColor(bestPerf) }}>{bestPerf || '—'}</span>
           </p>
           <p className="flex items-center gap-2 text-sm sm:text-base">
             <img src={star} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />
-            Contest attempts: <span className="font-mono">{user.contest_attempts}</span>
+            <span>Contest attempts:</span>
+            <span className="font-mono">{user.contest_attempts}</span>
           </p>
           <p className="flex items-center gap-2 text-sm sm:text-base">
             <img src={mail} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />

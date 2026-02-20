@@ -160,7 +160,7 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
     contestHistory.forEach((item) => {
       if (item.date) {
         const current = maxRatingByDate.get(item.date)
-        const newVal = Math.max(current ?? 0, item.rating_after)
+        const newVal = Math.max(current ?? 0, item.rating)
         maxRatingByDate.set(item.date, newVal)
       }
     })
@@ -184,7 +184,7 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
 
     // Calculate maximum rating from both data sources
     const themeCpMaxRating = contestHistory.length > 0 
-      ? Math.max(...contestHistory.map(item => item.rating_after))
+      ? Math.max(...contestHistory.map(item => item.rating))
       : 0
     const cfMaxRating = cfData.length > 0
       ? Math.max(...cfData.map(item => item.rating))

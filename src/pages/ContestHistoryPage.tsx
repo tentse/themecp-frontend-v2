@@ -4,6 +4,12 @@ import type { ContestHistoryItem } from '@/api/types'
 import { buildCodeforcesUrl } from '@/utils/codeforces'
 import { getRatingColor } from '@/utils/rating'
 
+function solvedCount(item: ContestHistoryItem): number {
+  return [item.p1_status, item.p2_status, item.p3_status, item.p4_status].filter(
+    (s) => s === 'SOLVED'
+  ).length
+}
+
 export default function ContestHistoryPage() {
   const [items, setItems] = useState<ContestHistoryItem[]>([])
   const [total, setTotal] = useState(0)
@@ -23,7 +29,7 @@ export default function ContestHistoryPage() {
       if (!cancelled) setLoading(false)
     })
     return () => { cancelled = true }
-  }, [skip])
+  }, [skip, limit])
 
   return (
     <div className="space-y-6">
@@ -54,34 +60,37 @@ export default function ContestHistoryPage() {
               </thead>
               <tbody>
                 {items.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={item.session_id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="border border-gray-100 p-2 sm:p-3">{skip + idx + 1}</td>
                     <td className="border border-gray-100 p-2 sm:p-3">{item.date}</td>
                     <td className="border border-gray-100 p-2 sm:p-3">{item.theme}</td>
                     <td className="border border-gray-100 p-2 sm:p-3">{item.level}</td>
                     <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p1.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p1.contestID, item.p1.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
+                      <a href={buildCodeforcesUrl(item.p1.contestId, item.p1.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
                         {item.p1.rating}
                       </a>
                     </td>
                     <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p2.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p2.contestID, item.p2.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
+                      <a href={buildCodeforcesUrl(item.p2.contestId, item.p2.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
                         {item.p2.rating}
                       </a>
                     </td>
                     <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p3.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p3.contestID, item.p3.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
+                      <a href={buildCodeforcesUrl(item.p3.contestId, item.p3.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
                         {item.p3.rating}
                       </a>
                     </td>
                     <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p4.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p4.contestID, item.p4.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
+                      <a href={buildCodeforcesUrl(item.p4.contestId, item.p4.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
                         {item.p4.rating}
                       </a>
                     </td>
-                    <td className="border border-gray-100 p-2 sm:p-3">{item.solved_count}</td>
+                    <td className="border border-gray-100 p-2 sm:p-3">{solvedCount(item)}</td>
                     <td className="border border-gray-100 p-3 font-medium" style={{ color: getRatingColor(item.performance) }}>~{item.performance}</td>
-                    <td className="border border-gray-100 p-2 sm:p-3">{item.rating_after}</td>
+                    <td className="border border-gray-100 p-2 sm:p-3">{item.rating}</td>
                     <td className="border border-gray-100 p-3 font-medium" style={{ color: item.rating_delta >= 0 ? 'green' : 'red' }}>
                       {item.rating_delta >= 0 ? '+' : ''}{item.rating_delta}
                     </td>

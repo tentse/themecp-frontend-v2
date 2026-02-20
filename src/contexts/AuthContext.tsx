@@ -14,6 +14,46 @@ import { login as apiLogin, register as apiRegister } from '@/api/auth';
 import { getProfile } from '@/api/users';
 import type { UserResponse } from '@/api/types';
 
+type StoredTokenValidationResult = 'ok' | 'missing' | 'invalid' | 'error';
+
+type ProfileFetchResult =
+  | { kind: 'ok'; profile: UserResponse }
+  | { kind: 'invalid' }
+  | { kind: 'error' };
+
+function getErrorStatus(error_: unknown): number | null {
+  return error_ && typeof error_ === 'object' && 'status' in error_ && typeof (error_ as { status: unknown }).status === 'number'
+    ? (error_ as { status: number }).status
+    : null;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchProfileWithSingleRetry(fetcher: () => Promise<UserResponse>): Promise<ProfileFetchResult> {
+  try {
+    const profile = await fetcher();
+    return { kind: 'ok', profile };
+  } catch (error_: unknown) {
+    const status = getErrorStatus(error_);
+    if (status === 401 || status === 403) return { kind: 'invalid' };
+
+    const shouldRetry = status === null || status >= 500;
+    if (!shouldRetry) return { kind: 'error' };
+
+    await sleep(800);
+    try {
+      const profile = await fetcher();
+      return { kind: 'ok', profile };
+    } catch (error__: unknown) {
+      const status2 = getErrorStatus(error__);
+      if (status2 === 401 || status2 === 403) return { kind: 'invalid' };
+      return { kind: 'error' };
+    }
+  }
+}
+
 interface AuthContextValue {
   token: string | null;
   user: UserResponse | null;
@@ -29,7 +69,6 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 const TOKEN_KEY = 'token';
-const EMAIL_KEY = 'user_email';
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const { user: auth0User, isAuthenticated: auth0Authenticated, isLoading: auth0Loading, logout: auth0Logout } = useAuth0();
@@ -43,7 +82,6 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   const clearAuthState = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(EMAIL_KEY);
     setToken(null);
     setUser(null);
   }, []);
@@ -52,21 +90,32 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     setError(null);
   }, []);
 
-  const validateStoredToken = useCallback(async () => {
+  const validateStoredToken = useCallback(async (): Promise<StoredTokenValidationResult> => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     if (!storedToken) {
       clearAuthState();
       setLoading(false);
-      return;
+      return 'missing';
     }
 
     try {
-      const profile = await getProfile();
+      const result = await fetchProfileWithSingleRetry(getProfile);
+      if (result.kind === 'ok') {
+        setToken(storedToken);
+        setUser(result.profile);
+        setError(null);
+        return 'ok';
+      }
+
+      if (result.kind === 'invalid') {
+        clearAuthState();
+        setError('Your session has expired. Please sign in again.');
+        return 'invalid';
+      }
+
       setToken(storedToken);
-      setUser(profile);
-    } catch {
-      clearAuthState();
-      setError('Your session has expired. Please sign in again.');
+      setError('Unable to load your profile right now. Please try again.');
+      return 'error';
     } finally {
       setLoading(false);
     }
@@ -84,7 +133,22 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
       const profile = await getProfile();
       setUser(profile);
       setRegisterAttempts(prev => ({ ...prev, [email]: 0 }));
-    } catch {
+    } catch (err: unknown) {
+      const status =
+        err && typeof err === 'object' && 'status' in err && typeof (err as { status: unknown }).status === 'number'
+          ? (err as { status: number }).status
+          : null;
+
+      // Only auto-register when backend explicitly says the user doesn't exist.
+      if (status !== 401) {
+        const detail =
+          err && typeof err === 'object' && 'detail' in err && typeof (err as { detail: unknown }).detail === 'string'
+            ? (err as { detail: string }).detail
+            : 'Failed to authenticate with backend. Please try again.';
+        setError(detail);
+        return;
+      }
+
       // User not found (401) - try register with retry limit
       const currentAttempts = registerAttempts[email] || 0;
       
@@ -112,29 +176,42 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     }
   }, [syncing, registerAttempts]);
 
-  // When Auth0 user changes, store email and sync with backend
+  // When Auth0 user changes, sync with backend
   useEffect(() => {
     if (auth0Loading) {
       setLoading(true);
       return;
     }
 
-    if (auth0Authenticated && auth0User?.email) {
-      // Store email immediately from Auth0 (works even if backend is down)
-      localStorage.setItem(EMAIL_KEY, auth0User.email);
-      
-      // Try to sync with backend if not already synced
+    let cancelled = false;
+
+    const run = async () => {
+      setLoading(true);
+
+      // Prefer an existing backend token until it expires.
       const backendToken = localStorage.getItem(TOKEN_KEY);
-      if (!backendToken || !user) {
-        syncWithBackend(auth0User.email);
-      } else {
-        setLoading(false);
+      if (backendToken) {
+        const result = await validateStoredToken();
+        if (cancelled) return;
+        if (result === 'ok') return;
+        if (result === 'error') return;
       }
-    } else {
-      validateStoredToken();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth0Loading, auth0Authenticated, auth0User?.email]);
+
+      // No valid backend token; fall back to Auth0->backend sync when available.
+      if (auth0Authenticated && auth0User?.email) {
+        await syncWithBackend(auth0User.email);
+        return;
+      }
+
+      clearAuthState();
+      setLoading(false);
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [auth0Loading, auth0Authenticated, auth0User?.email, validateStoredToken, syncWithBackend, clearAuthState]);
 
   useEffect(() => {
     const handleAuthExpired = () => {
@@ -161,10 +238,20 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
     try {
       const profile = await getProfile();
       setUser(profile);
-    } catch {
-      clearAuthState();
-      setError('Your session has expired. Please sign in again.');
-      navigate('/login');
+    } catch (err: unknown) {
+      const status =
+        err && typeof err === 'object' && 'status' in err && typeof (err as { status: unknown }).status === 'number'
+          ? (err as { status: number }).status
+          : null;
+
+      if (status === 401 || status === 403) {
+        clearAuthState();
+        setError('Your session has expired. Please sign in again.');
+        navigate('/login');
+        return;
+      }
+
+      setError('Unable to refresh your profile right now. Please try again.');
     }
   }, [clearAuthState, navigate]);
 

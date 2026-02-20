@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { getVerificationProblem, updateHandle } from '@/api/users'
 import { useAuth } from '@/contexts/AuthContext'
 import { buildCodeforcesUrl } from '@/utils/codeforces'
+import CountdownTimer from '@/components/CountdownTimer'
 
 export default function AddHandle() {
   const { refetchUser } = useAuth()
@@ -14,7 +15,26 @@ export default function AddHandle() {
   } | null>(null)
   const [loading, setLoading] = useState(false)
   const [verifying, setVerifying] = useState(false)
+  const [expiresAtMs, setExpiresAtMs] = useState<number | null>(null)
+  const [nowMs, setNowMs] = useState(() => Date.now())
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!expiresAtMs) return
+    setNowMs(Date.now())
+    const id = setInterval(() => setNowMs(Date.now()), 250)
+    return () => clearInterval(id)
+  }, [expiresAtMs])
+
+  const isExpired = !!expiresAtMs && nowMs >= expiresAtMs
+
+  const handleTimeout = useCallback(() => {
+    setError('Time over. Please find a new verification problem.')
+    setVerificationProblem(null)
+    setHandleInput('')
+    setVerifying(false)
+    setExpiresAtMs(null)
+  }, [])
 
   const handleFindProblem = async () => {
     const handle = handleInput.trim()
@@ -24,10 +44,12 @@ export default function AddHandle() {
     }
     setError(null)
     setVerificationProblem(null)
+    setExpiresAtMs(null)
     setLoading(true)
     try {
       const problem = await getVerificationProblem(handle)
       setVerificationProblem(problem)
+      setExpiresAtMs(Date.now() + 60_000)
     } catch (err: unknown) {
       const detail = err && typeof err === 'object' && 'detail' in err ? String((err as { detail: string }).detail) : 'Failed to get verification problem'
       setError(detail)
@@ -39,6 +61,10 @@ export default function AddHandle() {
   const handleVerify = async () => {
     const handle = handleInput.trim()
     if (!handle || !verificationProblem) return
+    if (!expiresAtMs || Date.now() >= expiresAtMs) {
+      handleTimeout()
+      return
+    }
     setError(null)
     setVerifying(true)
     try {
@@ -47,6 +73,7 @@ export default function AddHandle() {
         await refetchUser()
         setVerificationProblem(null)
         setHandleInput('')
+        setExpiresAtMs(null)
       } else {
         setError('Verification failed. Please submit a COMPILATION_ERROR to the problem on Codeforces, then try again.')
       }
@@ -75,7 +102,7 @@ export default function AddHandle() {
           disabled={loading}
           className="w-full sm:w-auto rounded-xl bg-black px-5 py-3 text-white hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
         >
-          {loading ? 'Loading...' : 'Find Problem'}
+          {loading ? 'Loading...' : 'Get Problem'}
         </button>
       </div>
       {verificationProblem && (
@@ -83,6 +110,11 @@ export default function AddHandle() {
           <p className="text-sm">
             Submit a <strong>COMPILATION_ERROR</strong> to this problem on Codeforces to verify ownership, then click Verify below.
           </p>
+          {expiresAtMs && (
+            <div className="text-sm text-gray-700">
+              Time left: <CountdownTimer targetTimestamp={expiresAtMs} onExpire={handleTimeout} className="font-mono" />
+            </div>
+          )}
           <a
             href={buildCodeforcesUrl(verificationProblem.contestID, verificationProblem.index)}
             target="_blank"
@@ -94,7 +126,7 @@ export default function AddHandle() {
           <div>
             <button
               onClick={handleVerify}
-              disabled={verifying}
+              disabled={verifying || isExpired}
               className="w-full sm:w-auto rounded-xl bg-green-600 px-5 py-3 text-white hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
               {verifying ? 'Verifying...' : 'Verify'}

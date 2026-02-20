@@ -2,6 +2,7 @@ import type { ApiError } from './types';
 
 // Fallback for dev; set VITE_API_BASE_URL in .env for production
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_V2_PREFIX = '/api/v2';
 export const AUTH_EXPIRED_EVENT = 'auth:expired';
 
 function getToken(): string | null {
@@ -11,7 +12,11 @@ function getToken(): string | null {
 function buildUrl(path: string, params?: Record<string, string | number>): string {
   const base = BASE_URL.replace(/\/$/, '');
   const pathStr = path.startsWith('/') ? path : `/${path}`;
-  const url = new URL(`${base}${pathStr}`);
+  const baseAlreadyHasV2Prefix = base.endsWith(API_V2_PREFIX);
+  const finalPath = baseAlreadyHasV2Prefix || pathStr === API_V2_PREFIX || pathStr.startsWith(`${API_V2_PREFIX}/`)
+    ? pathStr
+    : `${API_V2_PREFIX}${pathStr}`;
+  const url = new URL(`${base}${finalPath}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.set(key, String(value));
@@ -43,7 +48,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
     } catch {
       detail = response.statusText || detail;
     }
-    const error: ApiError = { detail };
+    const error: ApiError = { detail, status: response.status };
     if (response.status === 401) {
       localStorage.removeItem('token');
       if (hadToken) {
@@ -51,6 +56,10 @@ async function handleResponse<T>(response: Response): Promise<T> {
       }
     }
     throw error;
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
   }
 
   const contentType = response.headers.get('Content-Type');
@@ -65,7 +74,6 @@ export async function apiGet<T>(path: string, params?: Record<string, string | n
   const response = await fetch(url, {
     method: 'GET',
     headers: getHeaders(),
-    credentials: 'include',
   });
   return handleResponse<T>(response);
 }
@@ -75,7 +83,6 @@ export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
   const response = await fetch(url, {
     method: 'POST',
     headers: getHeaders(),
-    credentials: 'include',
     body: body ? JSON.stringify(body) : undefined,
   });
   return handleResponse<T>(response);
@@ -86,7 +93,6 @@ export async function apiPut<T>(path: string, body?: unknown): Promise<T> {
   const response = await fetch(url, {
     method: 'PUT',
     headers: getHeaders(),
-    credentials: 'include',
     body: body ? JSON.stringify(body) : undefined,
   });
   return handleResponse<T>(response);
@@ -100,7 +106,6 @@ export async function apiGetPublic<T>(path: string, params?: Record<string, stri
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
   });
   return handleResponse<T>(response);
 }
