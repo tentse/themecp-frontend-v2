@@ -98,6 +98,15 @@ export async function apiPut<T>(path: string, body?: unknown): Promise<T> {
   return handleResponse<T>(response);
 }
 
+export async function apiDelete<T>(path: string): Promise<T> {
+  const url = buildUrl(path);
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+  return handleResponse<T>(response);
+}
+
 // For unauthenticated requests (e.g. GET /contest-level)
 export async function apiGetPublic<T>(path: string, params?: Record<string, string | number>): Promise<T> {
   const url = buildUrl(path, params);

@@ -97,6 +97,11 @@ export interface ContestHistoryItem {
   p2_status: ProblemStatus;
   p3_status: ProblemStatus;
   p4_status: ProblemStatus;
+  /** Minutes to solve (when SOLVED); optional until backend returns it */
+  p1_solved_in_min?: number | null;
+  p2_solved_in_min?: number | null;
+  p3_solved_in_min?: number | null;
+  p4_solved_in_min?: number | null;
 }
 
 export interface ContestHistoryOutput {

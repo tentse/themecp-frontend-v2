@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getActiveSession, createSession, startSession } from '@/api/contestSession'
+import { getActiveSession, createSession, startSession, reRollProblem, deleteSession } from '@/api/contestSession'
 import type { ContestSessionOutput } from '@/api/types'
 
 type Phase = 'NO_SESSION' | 'REVIEW'
@@ -11,6 +11,8 @@ export function useContestSession() {
   const [session, setSession] = useState<ContestSessionOutput | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [reRollingProblem, setReRollingProblem] = useState<number | null>(null)
+  const [discarding, setDiscarding] = useState(false)
 
   const loadSession = useCallback(async () => {
     setLoading(true)
@@ -81,6 +83,48 @@ export function useContestSession() {
     }
   }, [session, navigate])
 
+  const reRoll = useCallback(
+    async (problemNumber: number) => {
+      if (session?.status !== 'REVIEW') return
+      setReRollingProblem(problemNumber)
+      setError(null)
+      try {
+        const updated = await reRollProblem(session.id, problemNumber)
+        setSession(updated)
+      } catch (err: unknown) {
+        const d =
+          err && typeof err === 'object' && 'detail' in err
+            ? (err as { detail: string }).detail
+            : 'Failed to re-roll problem'
+        setError(String(d))
+        throw err
+      } finally {
+        setReRollingProblem(null)
+      }
+    },
+    [session]
+  )
+
+  const discardSession = useCallback(async () => {
+    if (session?.status !== 'REVIEW') return
+    setDiscarding(true)
+    setError(null)
+    try {
+      await deleteSession(session.id)
+      setPhase('NO_SESSION')
+      setSession(null)
+    } catch (err: unknown) {
+      const d =
+        err && typeof err === 'object' && 'detail' in err
+          ? (err as { detail: string }).detail
+          : 'Failed to discard session'
+      setError(String(d))
+      throw err
+    } finally {
+      setDiscarding(false)
+    }
+  }, [session])
+
   return {
     phase,
     session,
@@ -88,6 +132,10 @@ export function useContestSession() {
     error,
     create,
     start,
+    reRoll,
+    reRollingProblem,
+    discardSession,
+    discarding,
     reload: loadSession,
   }
 }
