@@ -1,4 +1,4 @@
-import { apiGet, apiPost, apiPut } from './client';
+import { apiGet, apiPost, apiPut, apiDelete } from './client';
 import type {
   ContestSessionOutput,
   ContestSessionInput,
@@ -44,6 +44,16 @@ export async function startSession(sessionId: string): Promise<ContestSessionOut
   return normalizeSessionPayload(raw);
 }
 
+export async function reRollProblem(
+  sessionId: string,
+  problemNumber: number
+): Promise<ContestSessionOutput> {
+  const raw = await apiPut<ContestSessionOutput>(
+    `/contest-session/${sessionId}/re-roll-problem/${problemNumber}`
+  );
+  return normalizeSessionPayload(raw);
+}
+
 export async function refreshStatus(
   sessionId: string
 ): Promise<ContestSessionProblemsStatus> {
@@ -55,6 +65,10 @@ export async function refreshStatus(
 
 export async function endSession(sessionId: string): Promise<void> {
   await apiPut<void>(`/contest-session/${sessionId}/end`);
+}
+
+export async function deleteSession(sessionId: string): Promise<void> {
+  await apiDelete<void>(`/contest-session/${sessionId}`);
 }
 
 export async function getHistory(

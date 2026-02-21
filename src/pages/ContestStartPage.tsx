@@ -89,7 +89,7 @@ export default function ContestStartPage() {
       } catch {
         // ignore
       }
-    }, 30000)
+    }, 300000)
     return () => clearInterval(id)
   }, [session?.id, session?.status, session?.ends_at])
 

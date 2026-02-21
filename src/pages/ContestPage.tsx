@@ -186,6 +186,10 @@ function ReviewView(props: Readonly<{
   session: ContestSessionOutput
   starting: boolean
   onStart: () => void
+  onReRoll: (problemNumber: number) => void
+  reRollingProblem: number | null
+  onRegenerate: () => void
+  regenerating: boolean
 }>) {
   const problems: ProblemDetail[] = [props.session.p1, props.session.p2, props.session.p3, props.session.p4]
   return (
@@ -240,11 +244,11 @@ function ReviewView(props: Readonly<{
               </a>
               <button
                 type="button"
-                disabled
-                title="Coming soon"
-                className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-medium text-gray-500 cursor-not-allowed"
+                onClick={() => props.onReRoll(i + 1)}
+                disabled={props.reRollingProblem !== null}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
               >
-                Re-roll (coming soon)
+                {props.reRollingProblem === i + 1 ? 'Re-rolling...' : 'Re-roll'}
               </button>
             </div>
           )
@@ -255,11 +259,11 @@ function ReviewView(props: Readonly<{
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            disabled
-            title="Coming soon"
-            className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-500 cursor-not-allowed"
+            onClick={() => props.onRegenerate()}
+            disabled={props.regenerating || props.starting}
+            className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
-            Regenerate contest (coming soon)
+            {props.regenerating ? 'Regenerating...' : 'Regenerate contest'}
           </button>
         </div>
         <div className="text-sm text-gray-600">
@@ -284,7 +288,7 @@ export default function ContestPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { levels } = useLevel()
-  const { phase, session, loading, error, create, start } = useContestSession()
+  const { phase, session, loading, error, create, start, reRoll, reRollingProblem, discardSession, discarding } = useContestSession()
 
   const [selectedLevel, setSelectedLevel] = useState<number | ''>('')
   const [selectedTheme, setSelectedTheme] = useState<string>('mixed')
@@ -295,7 +299,7 @@ export default function ContestPage() {
     () => (selectedLevel === '' ? undefined : levels.find((l) => l.level === selectedLevel)),
     [levels, selectedLevel]
   )
-  const duration = levelObj?.duration_in_min ?? 120
+  const duration = levelObj?.duration_in_min
   const isLevelValid = !!levelObj
 
   const suggestedLevel = useMemo(() => {
@@ -324,12 +328,21 @@ export default function ContestPage() {
   }
 
   const runStart = async () => {
-    if (!globalThis.confirm("Once contest started you can't stop the contest. ARE YOU READY TO START?")) return
+    if (!globalThis.confirm("ARE YOU READY TO START?")) return
     setStarting(true)
     try {
       await start()
     } finally {
       setStarting(false)
+    }
+  }
+
+  const runRegenerate = async () => {
+    if (!globalThis.confirm('Discard this contest and choose a new level?')) return
+    try {
+      await discardSession()
+    } catch {
+      // Error already set in hook; ErrorCard will show
     }
   }
 
@@ -369,6 +382,10 @@ export default function ContestPage() {
         session={session}
         starting={starting}
         onStart={runStart}
+        onReRoll={reRoll}
+        reRollingProblem={reRollingProblem}
+        onRegenerate={runRegenerate}
+        regenerating={discarding}
       />
     )
   }

@@ -308,6 +308,38 @@ Important behavior:
   - **503**: `{ "detail": "Error occurred while fetching Codeforces problems." }`
   - **503**: `{ "detail": "Database error occurred while saving contest session." }`
 
+#### PUT `/api/v2/contest-session/{contest_session_id}/re-roll-problem/{problem_number}`
+
+Re-roll a single problem in a contest session. Only allowed when the session is in **REVIEW** status (before start). The backend replaces the problem at the given slot with a new one (same theme/level, excluding already-seen problems).
+
+- **Auth**: yes
+- **Path**:
+  - `contest_session_id` (string)
+  - `problem_number` (int, 1–4: problem slot to re-roll)
+- **Response 200** (`ContestSessionOutput`), same shape as GET/POST above (session with updated problem at that slot).
+
+- **Errors**:
+  - **400**: `{ "detail": "Invalid problem number." }` (`problem_number` not in 1–4)
+  - **401**: `{ "detail": "Invalid token" }`
+  - **404**: `{ "detail": "Contest session not found" }`
+  - **409**: `{ "detail": "Contest session is not in REVIEW status." }`
+  - **503**: `{ "detail": "Database error occurred while updating contest session problem." }`
+
+#### DELETE `/api/v2/contest-session/{contest_session_id}`
+
+Delete a contest session. Only allowed when the session is in **REVIEW** status (before start). After deletion, the user has no active session and can create a new one.
+
+- **Auth**: yes
+- **Path**:
+  - `contest_session_id` (string)
+- **Response 204**: **No Content**
+
+- **Errors**:
+  - **401**: `{ "detail": "Invalid token" }`
+  - **404**: `{ "detail": "Contest session not found" }`
+  - **409**: `{ "detail": "Contest session is not in REVIEW status." }`
+  - **503**: `{ "detail": "Database error occurred while deleting contest session." }`
+
 #### PUT `/api/v2/contest-session/{contest_session_id}/start`
 
 Start a contest session. Backend sets:
@@ -517,6 +549,20 @@ curl -sS -X POST "http://localhost:8000/api/v2/contest-session" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"level":21,"theme":"greedy"}'
+```
+
+Optional — re-roll a problem (only in `REVIEW`; replace problem at slot 1–4):
+
+```bash
+curl -sS -X PUT "http://localhost:8000/api/v2/contest-session/$SESSION_ID/re-roll-problem/2" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Optional — discard session (only in `REVIEW`; returns **204** no content):
+
+```bash
+curl -sS -X DELETE "http://localhost:8000/api/v2/contest-session/$SESSION_ID" \
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 Step B — start contest (15s countdown; switches to `RUNNING` and sets `starts_at`/`ends_at`):

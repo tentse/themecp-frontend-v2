@@ -1,13 +1,38 @@
 import { useEffect, useState } from 'react'
 import { getHistory } from '@/api/contestSession'
-import type { ContestHistoryItem } from '@/api/types'
+import type { ContestHistoryItem, ProblemDetail, ProblemStatus } from '@/api/types'
 import { buildCodeforcesUrl } from '@/utils/codeforces'
 import { getRatingColor } from '@/utils/rating'
 
-function solvedCount(item: ContestHistoryItem): number {
-  return [item.p1_status, item.p2_status, item.p3_status, item.p4_status].filter(
-    (s) => s === 'SOLVED'
-  ).length
+function problemStatusLabel(status: ProblemStatus, solvedInMin: number | null | undefined): string {
+  if (status === 'SOLVED') {
+    if (solvedInMin != null && Number.isFinite(solvedInMin)) return `${solvedInMin} min`
+    return 'SOLVED'
+  }
+  return '—'
+}
+
+function ProblemCell(props: Readonly<{
+  problem: ProblemDetail
+  status: ProblemStatus
+  solvedInMin?: number | null
+}>) {
+  const bgClass = props.status === 'SOLVED' ? 'bg-green-100' : 'bg-red-100'
+  return (
+    <td className={`border border-gray-100 p-3 ${bgClass}`}>
+      <a
+        href={buildCodeforcesUrl(props.problem.contestId, props.problem.index)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline hover:text-blue-800"
+      >
+        {props.problem.rating}
+      </a>
+      <div className="mt-1 text-xs text-gray-700">
+        {problemStatusLabel(props.status, props.solvedInMin)}
+      </div>
+    </td>
+  )
 }
 
 export default function ContestHistoryPage() {
@@ -52,7 +77,6 @@ export default function ContestHistoryPage() {
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P2</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P3</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P4</th>
-                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Solved</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Perf</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Rating</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Δ</th>
@@ -68,27 +92,10 @@ export default function ContestHistoryPage() {
                     <td className="border border-gray-100 p-2 sm:p-3">{item.date}</td>
                     <td className="border border-gray-100 p-2 sm:p-3">{item.theme}</td>
                     <td className="border border-gray-100 p-2 sm:p-3">{item.level}</td>
-                    <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p1.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p1.contestId, item.p1.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
-                        {item.p1.rating}
-                      </a>
-                    </td>
-                    <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p2.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p2.contestId, item.p2.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
-                        {item.p2.rating}
-                      </a>
-                    </td>
-                    <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p3.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p3.contestId, item.p3.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
-                        {item.p3.rating}
-                      </a>
-                    </td>
-                    <td className="border border-gray-100 p-3" style={{ backgroundColor: getRatingColor(item.p4.rating) }}>
-                      <a href={buildCodeforcesUrl(item.p4.contestId, item.p4.index)} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-800">
-                        {item.p4.rating}
-                      </a>
-                    </td>
-                    <td className="border border-gray-100 p-2 sm:p-3">{solvedCount(item)}</td>
+                    <ProblemCell problem={item.p1} status={item.p1_status} solvedInMin={item.p1_solved_in_min} />
+                    <ProblemCell problem={item.p2} status={item.p2_status} solvedInMin={item.p2_solved_in_min} />
+                    <ProblemCell problem={item.p3} status={item.p3_status} solvedInMin={item.p3_solved_in_min} />
+                    <ProblemCell problem={item.p4} status={item.p4_status} solvedInMin={item.p4_solved_in_min} />
                     <td className="border border-gray-100 p-3 font-medium" style={{ color: getRatingColor(item.performance) }}>~{item.performance}</td>
                     <td className="border border-gray-100 p-2 sm:p-3">{item.rating}</td>
                     <td className="border border-gray-100 p-3 font-medium" style={{ color: item.rating_delta >= 0 ? 'green' : 'red' }}>
