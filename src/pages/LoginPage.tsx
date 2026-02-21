@@ -11,8 +11,6 @@ export default function LoginPage() {
   // Debug logging
   useEffect(() => {
     console.log('=== LoginPage Debug Info ===')
-    console.log('Auth0 Domain:', import.meta.env.VITE_AUTH0_DOMAIN)
-    console.log('Auth0 Client ID:', import.meta.env.VITE_AUTH0_CLIENT_ID)
     console.log('Auth0 Loading:', auth0Loading)
     console.log('Auth0 Authenticated:', auth0Authenticated)
     console.log('Backend Loading:', loading)
