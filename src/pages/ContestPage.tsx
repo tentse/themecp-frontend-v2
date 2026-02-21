@@ -11,10 +11,10 @@ type Phase = 'NO_SESSION' | 'REVIEW'
 
 function RatingBox({ label, rating }: Readonly<{ label: string; rating: number }>) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-gray-200 bg-white p-3 py-4 shadow-sm flex flex-col min-w-0">
       <div className="text-xs font-medium text-gray-600">{label}</div>
       <div
-        className="mt-2 rounded-lg px-3 py-3 text-center font-mono text-lg font-semibold"
+        className="mt-2 rounded-lg px-3 py-2.5 text-center font-mono text-lg font-semibold flex-1 flex items-center justify-center"
         style={{ backgroundColor: getRatingColor(rating) }}
       >
         {rating}
@@ -70,7 +70,7 @@ function NoSessionView(props: Readonly<{
   suggestedLevel: number
   selectedTheme: string
   onSelectedThemeChange: (theme: string) => void
-  duration: number
+  duration: number | undefined
   isLevelValid: boolean
   levelObj: { p1_rating: number; p2_rating: number; p3_rating: number; p4_rating: number } | undefined
   creating: boolean
@@ -145,19 +145,20 @@ function NoSessionView(props: Readonly<{
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 max-w-xs">
-          <div className="text-sm font-medium text-gray-700">Duration</div>
-          <div className="mt-1 font-mono text-lg font-semibold text-gray-900">{props.duration} min</div>
-        </div>
-
         <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
-          <div>
-            <div className="text-sm font-medium text-gray-700">Expected problem ratings</div>
-            <div className="mt-1 text-xs text-gray-500">Preview based on the selected contest level preset.</div>
+          <div className="flex flex-row flex-wrap items-start justify-between gap-3">
+            <div>
+              <div className="text-sm font-medium text-gray-700">Expected problem ratings</div>
+              <div className="mt-1 text-xs text-gray-500">Preview based on the selected contest level preset.</div>
+            </div>
+            <div className="rounded-xl border border-gray-200 bg-gray-50 px-5 py-2.5 shrink-0 min-w-[140px]">
+              <div className="text-xs font-medium text-gray-600">Duration</div>
+              <div className="font-mono text-lg font-semibold text-gray-900">{props.duration == null ? '—' : `${props.duration} min`}</div>
+            </div>
           </div>
 
           {props.levelObj ? (
-            <div className="mt-4 flex flex-row flex-wrap gap-3">
+            <div className="mt-4 grid grid-cols-4 gap-3 w-full">
               <RatingBox label="P1" rating={props.levelObj.p1_rating} />
               <RatingBox label="P2" rating={props.levelObj.p2_rating} />
               <RatingBox label="P3" rating={props.levelObj.p3_rating} />
