@@ -77,7 +77,6 @@ export default function ContestHistoryPage() {
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P2</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P3</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">P4</th>
-                  <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Time (min)</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Perf</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Rating</th>
                   <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold">Δ</th>
@@ -97,14 +96,6 @@ export default function ContestHistoryPage() {
                     <ProblemCell problem={item.p2} status={item.p2_status} solvedInMin={item.p2_solved_in_min} />
                     <ProblemCell problem={item.p3} status={item.p3_status} solvedInMin={item.p3_solved_in_min} />
                     <ProblemCell problem={item.p4} status={item.p4_status} solvedInMin={item.p4_solved_in_min} />
-                    <td className="border border-gray-100 p-2 sm:p-3 text-center font-mono text-xs sm:text-sm text-gray-700">
-                      {[
-                        item.p1_status === 'SOLVED' && item.p1_solved_in_min != null ? item.p1_solved_in_min : '—',
-                        item.p2_status === 'SOLVED' && item.p2_solved_in_min != null ? item.p2_solved_in_min : '—',
-                        item.p3_status === 'SOLVED' && item.p3_solved_in_min != null ? item.p3_solved_in_min : '—',
-                        item.p4_status === 'SOLVED' && item.p4_solved_in_min != null ? item.p4_solved_in_min : '—',
-                      ].join(' · ')}
-                    </td>
                     <td className="border border-gray-100 p-3 font-medium" style={{ color: getRatingColor(item.performance) }}>~{item.performance}</td>
                     <td className="border border-gray-100 p-2 sm:p-3">{item.rating}</td>
                     <td className="border border-gray-100 p-3 font-medium" style={{ color: item.rating_delta >= 0 ? 'green' : 'red' }}>

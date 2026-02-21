@@ -299,7 +299,7 @@ export default function ContestPage() {
     () => (selectedLevel === '' ? undefined : levels.find((l) => l.level === selectedLevel)),
     [levels, selectedLevel]
   )
-  const duration = levelObj?.duration_in_min ?? 120
+  const duration = levelObj?.duration_in_min
   const isLevelValid = !!levelObj
 
   const suggestedLevel = useMemo(() => {
@@ -328,7 +328,7 @@ export default function ContestPage() {
   }
 
   const runStart = async () => {
-    if (!globalThis.confirm("Once contest started you can't stop the contest. ARE YOU READY TO START?")) return
+    if (!globalThis.confirm("ARE YOU READY TO START?")) return
     setStarting(true)
     try {
       await start()
