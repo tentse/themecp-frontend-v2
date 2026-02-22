@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { useLevel } from '@/contexts/LevelContext'
 import { useContestSession } from '@/hooks/useContestSession'
+import { getContestThemes } from '@/api/contestTheme'
 import { buildCodeforcesUrl } from '@/utils/codeforces'
 import { getRatingColor } from '@/utils/rating'
-import type { ContestSessionOutput, ProblemDetail } from '@/api/types'
+import type { ContestSessionOutput, ProblemDetail, ContestThemeOutput } from '@/api/types'
 
 type Phase = 'NO_SESSION' | 'REVIEW'
 
@@ -68,6 +69,8 @@ function NoSessionView(props: Readonly<{
   selectedLevel: number | ''
   onSelectedLevelChange: (level: number | '') => void
   suggestedLevel: number
+  themes: ContestThemeOutput[]
+  themesLoading: boolean
   selectedTheme: string
   onSelectedThemeChange: (theme: string) => void
   duration: number | undefined
@@ -128,20 +131,32 @@ function NoSessionView(props: Readonly<{
         </div>
 
         <div>
-          <div className="block text-sm font-medium text-gray-700">Theme</div>
-          <div className="mt-2 rounded-xl border border-gray-200 bg-white p-3 max-w-xs">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="theme"
-                value="mixed"
-                checked={props.selectedTheme === 'mixed'}
-                onChange={() => props.onSelectedThemeChange('mixed')}
-                className="h-4 w-4"
-              />
-              <span className="text-sm font-medium text-gray-900">Mixed</span>
-              <span className="text-xs text-gray-500">(only option for now)</span>
-            </label>
+          <label htmlFor="contest-theme" className="block text-sm font-medium text-gray-700">
+            Theme
+          </label>
+          <div className="mt-2 max-w-xs">
+            {props.themesLoading ? (
+              <div className="min-h-[3rem] rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-base text-gray-500">
+                Loading themes…
+              </div>
+            ) : props.themes.length === 0 ? (
+              <div className="min-h-[3rem] rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-base text-amber-600">
+                No themes available.
+              </div>
+            ) : (
+              <select
+                id="contest-theme"
+                value={props.selectedTheme}
+                onChange={(e) => props.onSelectedThemeChange(e.target.value)}
+                className="w-full min-h-[3rem] rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-base font-medium text-gray-900 focus:ring-1 focus:ring-black focus:outline-none cursor-pointer"
+              >
+                {props.themes.map((t) => (
+                  <option key={t.id} value={t.theme}>
+                    {t.theme}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
 
@@ -173,7 +188,7 @@ function NoSessionView(props: Readonly<{
 
         <button
           onClick={props.onCreate}
-          disabled={props.creating || !props.isLevelValid}
+          disabled={props.creating || !props.isLevelValid || !props.selectedTheme || props.themesLoading}
           className="w-full max-w-xs rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
         >
           {props.creating ? 'Generating...' : 'Generate contest'}
@@ -292,9 +307,29 @@ export default function ContestPage() {
   const { phase, session, loading, error, create, start, reRoll, reRollingProblem, discardSession, discarding } = useContestSession()
 
   const [selectedLevel, setSelectedLevel] = useState<number | ''>('')
-  const [selectedTheme, setSelectedTheme] = useState<string>('mixed')
+  const [themes, setThemes] = useState<ContestThemeOutput[]>([])
+  const [themesLoading, setThemesLoading] = useState(true)
+  const [selectedTheme, setSelectedTheme] = useState<string>('')
   const [creating, setCreating] = useState(false)
   const [starting, setStarting] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    getContestThemes()
+      .then((list) => {
+        if (!cancelled) {
+          setThemes(list)
+          setSelectedTheme((prev) => {
+            const valid = list.some((t) => t.theme === prev)
+            return valid ? prev : list[0]?.theme ?? ''
+          })
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setThemesLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [])
 
   const levelObj = useMemo(
     () => (selectedLevel === '' ? undefined : levels.find((l) => l.level === selectedLevel)),
@@ -319,10 +354,10 @@ export default function ContestPage() {
   }, [levels, user?.rating])
 
   const runCreate = async () => {
-    if (!isLevelValid || !levelObj) return
+    if (!isLevelValid || !levelObj || !selectedTheme) return
     setCreating(true)
     try {
-      await create(levelObj.level, selectedTheme)
+      await create(levelObj.level, selectedTheme.toLowerCase())
     } finally {
       setCreating(false)
     }
@@ -366,6 +401,8 @@ export default function ContestPage() {
         selectedLevel={selectedLevel}
         onSelectedLevelChange={setSelectedLevel}
         suggestedLevel={suggestedLevel}
+        themes={themes}
+        themesLoading={themesLoading}
         selectedTheme={selectedTheme}
         onSelectedThemeChange={setSelectedTheme}
         duration={duration}

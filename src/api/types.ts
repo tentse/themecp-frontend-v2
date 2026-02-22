@@ -34,6 +34,12 @@ export interface ContestLevel {
   p4_rating: number;
 }
 
+// Contest Theme (v2) — GET /contest-theme returns theme in uppercase
+export interface ContestThemeOutput {
+  id: number;
+  theme: string;
+}
+
 // Contest Session (v2)
 export type ContestStatus = 'REVIEW' | 'RUNNING' | 'FINISHED';
 export type ProblemStatus = 'UNSOLVED' | 'SOLVED' | 'UPSOLVED';

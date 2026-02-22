@@ -251,6 +251,47 @@ Return all contest levels (difficulty presets), ordered by `level` ascending.
 
 ---
 
+### Contest Themes
+
+Contest themes are tags used when creating a contest session (e.g. `greedy`, `dp`). The backend normalizes theme names to lowercase on create and returns them in uppercase in list responses.
+
+#### GET `/api/v2/contest-theme`
+
+Return all contest themes. Themes are returned with `theme` in **uppercase**.
+
+- **Auth**: no
+- **Response 200**:
+
+```json
+[
+  { "id": 1, "theme": "GREEDY" },
+  { "id": 2, "theme": "DP" }
+]
+```
+
+- **Errors**:
+  - **503**: `{ "detail": "Database error occurred while fetching contest themes." }`
+
+#### POST `/api/v2/contest-theme`
+
+Create a new contest theme. The `theme` value is normalized to **lowercase** before storage. Duplicate theme names (case-insensitive) return 409.
+
+- **Auth**: no
+- **Body**:
+
+```json
+{ "theme": "greedy" }
+```
+
+- **Response 204**: **No Content**
+
+- **Errors**:
+  - **409**: `{ "detail": "Contest theme already exists" }`
+  - **422**: invalid request body
+  - **503**: `{ "detail": "Database error occurred while creating contest theme." }`
+
+---
+
 ### Contest Sessions
 
 Contest sessions are the main “play” object. Each user can have **at most one active session** at a time:
@@ -465,7 +506,11 @@ Get the user’s contest history (FINISHED sessions only), paginated, latest fir
       "p1_status": "SOLVED",
       "p2_status": "UNSOLVED",
       "p3_status": "UNSOLVED",
-      "p4_status": "UNSOLVED"
+      "p4_status": "UNSOLVED",
+      "p1_solved_in_min": 5,
+      "p2_solved_in_min": null,
+      "p3_solved_in_min": null,
+      "p4_solved_in_min": null
     }
   ],
   "skip": 0,
@@ -476,6 +521,7 @@ Get the user’s contest history (FINISHED sessions only), paginated, latest fir
 
 Notes:
 - `date` is derived from `starts_at` in **UTC**, formatted `YYYY-MM-DD`.
+- `pN_solved_in_min` is minutes from contest start to first AC for that problem; `null` if not solved.
 - Sessions in `REVIEW` or `RUNNING` are **not included**.
 
 - **Errors**:
@@ -657,6 +703,16 @@ export type ContestLevel = {
   p4_rating: number;
 };
 
+// ---------- Contest themes ----------
+export type ContestThemeOutput = {
+  id: number;
+  theme: string; // uppercase in API response
+};
+
+export type ContestThemeInput = {
+  theme: string; // normalized to lowercase on server
+};
+
 // ---------- Contest sessions ----------
 export type ContestStatus = "REVIEW" | "RUNNING" | "FINISHED";
 export type ProblemStatus = "UNSOLVED" | "SOLVED" | "UPSOLVED";
@@ -719,6 +775,10 @@ export type ContestHistoryItem = {
   p2_status: ProblemStatus;
   p3_status: ProblemStatus;
   p4_status: ProblemStatus;
+  p1_solved_in_min: number | null;
+  p2_solved_in_min: number | null;
+  p3_solved_in_min: number | null;
+  p4_solved_in_min: number | null;
 };
 
 export type ContestHistoryOutput = {
