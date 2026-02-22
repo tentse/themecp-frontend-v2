@@ -5,6 +5,7 @@ import type {
   ContestSessionProblemsStatus,
   ContestHistoryOutput,
   ProblemDetail,
+  RatingPlot,
 } from './types';
 
 /** Backend may send contestID or contestId. Normalize to contestId. */
@@ -81,4 +82,10 @@ export async function getHistory(
   });
   res.items = res.items.map((item) => normalizeSessionPayload(item));
   return res;
+}
+
+export async function getRatingPlot(codeforces_rating = false): Promise<RatingPlot> {
+  return apiGet<RatingPlot>('/contest-session/rating-plot', {
+    codeforces_rating: codeforces_rating ? 'true' : 'false',
+  });
 }

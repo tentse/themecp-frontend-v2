@@ -327,6 +327,37 @@ Get the user’s active contest session (REVIEW or RUNNING).
   - **404**: `{ "detail": "Contest session not found" }` (no active session)
   - **503**: `{ "detail": "Database error occurred while fetching contest session." }`
 
+#### GET `/api/v2/contest-session/rating-plot`
+
+Get rating history for the authenticated user for use in a rating-over-time plot.
+
+- **Auth**: yes
+- **Query params**:
+  - `codeforces_rating` (bool, optional, default `false`): if `true`, also fetch the user’s Codeforces rating history (requires a verified Codeforces handle); if `false` or the user has no handle, `codeforces_ratings` is an empty array.
+- **Response 200** (`RatingPlot`):
+
+```json
+{
+  "themecp_ratings": [
+    { "date": "2026-02-19", "rating": 1386, "rating_delta": -14 },
+    { "date": "2026-02-20", "rating": 1400, "rating_delta": 14 }
+  ],
+  "codeforces_ratings": [
+    { "date": "2025-01-15", "rating": 1200, "rating_delta": 50 }
+  ]
+}
+```
+
+Notes:
+- `themecp_ratings`: all **FINISHED** contest sessions for the user, ordered chronologically by contest date. Each item is the rating after that contest and the rating change. `date` is in **UTC** as `YYYY-MM-DD` (from contest `starts_at`).
+- `codeforces_ratings`: only populated when `codeforces_rating=true` and the user has a verified Codeforces handle. Comes from the Codeforces `user.rating` API; each entry is one rating change (contest). Empty array if not requested or handle missing.
+- Use both arrays to plot ThemeCP rating and (optionally) Codeforces rating on the same chart.
+
+- **Errors**:
+  - **401**: `{ "detail": "Invalid token" }`
+  - **503**: `{ "detail": "Database error occurred while fetching contest history." }`
+  - **503**: `{ "detail": "Error occurred while fetching user's rating history." }` (only when `codeforces_rating=true` and the Codeforces API fails)
+
 #### POST `/api/v2/contest-session`
 
 Create a new contest session in `REVIEW` status (generates 4 problems).
@@ -786,6 +817,18 @@ export type ContestHistoryOutput = {
   skip: number;
   limit: number;
   total: number;
+};
+
+// Rating plot (themecp + optional codeforces history)
+export type RatingPlotItem = {
+  date: string; // YYYY-MM-DD (UTC)
+  rating: number;
+  rating_delta: number;
+};
+
+export type RatingPlot = {
+  themecp_ratings: RatingPlotItem[];
+  codeforces_ratings: RatingPlotItem[];
 };
 
 export function codeforcesProblemUrl(p: { contestId: string; index: string }): string {

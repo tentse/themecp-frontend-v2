@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { getHistory } from '@/api/contestSession'
-import type { ContestHistoryItem } from '@/api/types'
+import { getHistory, getRatingPlot } from '@/api/contestSession'
+import type { ContestHistoryItem, RatingPlot } from '@/api/types'
 import AddHandle from '@/components/AddHandle'
 import RatingGraph from '@/components/RatingGraph'
 import ThemePieChart from '@/components/PieChart'
@@ -14,9 +14,10 @@ import { getRatingColor } from '@/utils/rating'
 export default function ProfilePage() {
   const { user } = useAuth()
   const [contestHistory, setContestHistory] = useState<ContestHistoryItem[]>([])
-  const [cfData, setCfData] = useState<{ date: string; rating: number }[]>([])
+  const [ratingPlot, setRatingPlot] = useState<RatingPlot | null>(null)
   const [showCfGraph, setShowCfGraph] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(true)
+  const [plotLoading, setPlotLoading] = useState(true)
 
   useEffect(() => {
     let cancelled = false
@@ -33,32 +34,20 @@ export default function ProfilePage() {
   }, [])
 
   useEffect(() => {
-    if (!showCfGraph || !user?.codeforces_handle) {
-      setCfData([])
-      return
-    }
     let cancelled = false
-    const load = async () => {
-      try {
-        const res = await fetch(
-          `https://codeforces.com/api/user.rating?handle=${user.codeforces_handle}`
-        )
-        const json = await res.json()
-        if (!cancelled && json.result) {
-          const data = json.result.map((r: { ratingUpdateTimeSeconds: number; newRating: number }) => {
-            const d = new Date(r.ratingUpdateTimeSeconds * 1000)
-            const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-            return { date, rating: r.newRating }
-          })
-          setCfData(data)
-        }
-      } catch {
-        if (!cancelled) setCfData([])
-      }
-    }
-    load()
+    setPlotLoading(true)
+    getRatingPlot(showCfGraph)
+      .then((data) => {
+        if (!cancelled) setRatingPlot(data)
+      })
+      .catch(() => {
+        if (!cancelled) setRatingPlot({ themecp_ratings: [], codeforces_ratings: [] })
+      })
+      .finally(() => {
+        if (!cancelled) setPlotLoading(false)
+      })
     return () => { cancelled = true }
-  }, [showCfGraph, user?.codeforces_handle])
+  }, [showCfGraph])
 
   if (!user) return (
     <div className="flex items-center justify-center min-h-[200px]">
@@ -121,10 +110,13 @@ export default function ProfilePage() {
             />
             <span>Plot CF rating graph</span>
           </label>
-          {historyLoading ? (
+          {historyLoading || plotLoading ? (
             <p>Loading chart...</p>
           ) : (
-            <RatingGraph contestHistory={contestHistory} cfData={showCfGraph ? cfData : []} />
+            <RatingGraph
+              themecpData={ratingPlot?.themecp_ratings ?? []}
+              cfData={showCfGraph ? (ratingPlot?.codeforces_ratings ?? []) : []}
+            />
           )}
         </div>
 

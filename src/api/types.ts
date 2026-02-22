@@ -117,6 +117,18 @@ export interface ContestHistoryOutput {
   total: number;
 }
 
+// Rating plot (GET /contest-session/rating-plot)
+export interface RatingPlotItem {
+  date: string; // YYYY-MM-DD (UTC)
+  rating: number;
+  rating_delta: number;
+}
+
+export interface RatingPlot {
+  themecp_ratings: RatingPlotItem[];
+  codeforces_ratings: RatingPlotItem[];
+}
+
 // Legacy alias
 export type ContestSession = ContestSessionOutput;
 

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import type { ContestHistoryItem } from '@/api/types'
+import type { RatingPlotItem } from '@/api/types'
 
 interface RatingGraphProps {
-  contestHistory: ContestHistoryItem[]
-  cfData?: { date: string; rating: number }[]
+  themecpData: RatingPlotItem[]
+  cfData?: RatingPlotItem[]
 }
 
 const Y_AXIS_REF = [0, 1200, 1400, 1600, 1900, 2100, 2300, 2400, 2600, 3000, 4500]
@@ -23,7 +23,7 @@ function toActualRating(displayRating: number): number {
   return COMPRESS_THRESHOLD + (displayRating - compressedTop)
 }
 
-export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraphProps) {
+export default function RatingGraph({ themecpData, cfData = [] }: RatingGraphProps) {
   const [options, setOptions] = useState<Highcharts.Options>({
     chart: { 
       type: 'line', 
@@ -157,7 +157,7 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
 
   useEffect(() => {
     const maxRatingByDate = new Map<string, number>()
-    contestHistory.forEach((item) => {
+    themecpData.forEach((item) => {
       if (item.date) {
         const current = maxRatingByDate.get(item.date)
         const newVal = Math.max(current ?? 0, item.rating)
@@ -183,8 +183,8 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
     )
 
     // Calculate maximum rating from both data sources
-    const themeCpMaxRating = contestHistory.length > 0 
-      ? Math.max(...contestHistory.map(item => item.rating))
+    const themeCpMaxRating = themecpData.length > 0
+      ? Math.max(...themecpData.map(item => item.rating))
       : 0
     const cfMaxRating = cfData.length > 0
       ? Math.max(...cfData.map(item => item.rating))
@@ -279,7 +279,7 @@ export default function RatingGraph({ contestHistory, cfData = [] }: RatingGraph
         },
       ],
     }))
-  }, [contestHistory, cfData])
+  }, [themecpData, cfData])
 
   return <HighchartsReact highcharts={Highcharts} options={options} />
 }
