@@ -4,6 +4,7 @@ import { getHistory, getRatingPlot } from '@/api/contestSession'
 import type { ContestHistoryItem, RatingPlot } from '@/api/types'
 import AddHandle from '@/components/AddHandle'
 import RatingGraph from '@/components/RatingGraph'
+import ContestHeatMap from '@/components/ContestHeatMap'
 import ThemePieChart from '@/components/PieChart'
 import Donation from '@/components/Donation'
 import ratingPic from '@/assets/rating.png'
@@ -118,6 +119,10 @@ export default function ProfilePage() {
               cfData={showCfGraph ? (ratingPlot?.codeforces_ratings ?? []) : []}
             />
           )}
+        </div>
+
+        <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+          <ContestHeatMap />
         </div>
 
         <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">

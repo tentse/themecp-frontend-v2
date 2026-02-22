@@ -129,6 +129,16 @@ export interface RatingPlot {
   codeforces_ratings: RatingPlotItem[];
 }
 
+// Heatgraph (GET /contest-session/heatgraph-data)
+export interface HeatgraphDataItem {
+  date: string; // YYYY-MM-DD (UTC)
+  contest_attempts: number;
+}
+
+export interface HeatgraphData {
+  items: HeatgraphDataItem[];
+}
+
 // Legacy alias
 export type ContestSession = ContestSessionOutput;
 

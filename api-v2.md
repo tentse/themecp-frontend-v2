@@ -358,6 +358,33 @@ Notes:
   - **503**: `{ "detail": "Database error occurred while fetching contest history." }`
   - **503**: `{ "detail": "Error occurred while fetching user's rating history." }` (only when `codeforces_rating=true` and the Codeforces API fails)
 
+#### GET `/api/v2/contest-session/heatgraph-data`
+
+Get contest attempt frequency per date for the authenticated user within a given calendar year, for use in a heatmap (e.g. GitHub-style activity).
+
+- **Auth**: yes
+- **Query params**:
+  - `year` (int, required): Calendar year in UTC (e.g. `2026`). Must be between 2000 and 2100. Only contests with `starts_at` in this year are included.
+- **Response 200** (`HeatgraphData`):
+
+```json
+{
+  "items": [
+    { "date": "2026-02-19", "contest_attempts": 1 },
+    { "date": "2026-02-20", "contest_attempts": 2 }
+  ]
+}
+```
+
+Notes:
+- Only **FINISHED** contest sessions are counted. `date` is in **UTC** as `YYYY-MM-DD`, derived from contest `starts_at`. Only dates within the requested year are returned.
+- Only dates with at least one contest are included. Items are ordered by date ascending.
+
+- **Errors**:
+  - **401**: `{ "detail": "Invalid token" }`
+  - **422**: missing or invalid `year` (e.g. out of range 2000–2100)
+  - **503**: `{ "detail": "Database error occurred while fetching contest history." }`
+
 #### POST `/api/v2/contest-session`
 
 Create a new contest session in `REVIEW` status (generates 4 problems).

@@ -1,5 +1,3 @@
-import RazorpayLogo from '@/assets/razorpay.svg'
-import paypal from '@/assets/paypal.png'
 import usdt from '@/assets/usdt.jpeg'
 import upi from '@/assets/upi.jpeg'
 

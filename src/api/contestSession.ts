@@ -6,6 +6,7 @@ import type {
   ContestHistoryOutput,
   ProblemDetail,
   RatingPlot,
+  HeatgraphData,
 } from './types';
 
 /** Backend may send contestID or contestId. Normalize to contestId. */
@@ -88,4 +89,8 @@ export async function getRatingPlot(codeforces_rating = false): Promise<RatingPl
   return apiGet<RatingPlot>('/contest-session/rating-plot', {
     codeforces_rating: codeforces_rating ? 'true' : 'false',
   });
+}
+
+export async function getHeatgraphData(year: number): Promise<HeatgraphData> {
+  return apiGet<HeatgraphData>('/contest-session/heatgraph-data', { year });
 }
