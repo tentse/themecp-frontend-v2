@@ -13,10 +13,7 @@ export default function Donation() {
           and the amount of donation are user&apos;s choice, they are greatly appreciated.
         </p>
         <p>
-          The primary reason we ask for your support is to help cover the costs of hosting the
-          website, which the developer personally bears. Your donation will help ensure continued
-          access to the platform, enhance the user experience, and enable many more features and
-          improvements.
+        The main reason we ask for your support is to help cover the hosting costs, which the developer currently pays personally. Your donation helps keep ThemeCP running, improve the experience, and add new features. If you’d like to show extra appreciation, you can also treat it as a tip to support continued development.
         </p>
         <p>Thank you for your generosity and support!</p>
       </div>
@@ -35,15 +32,6 @@ export default function Donation() {
           Contact me @10zin
         </a>
       </p>
-      <div className="mt-6">
-        <p className="font-medium mb-2">Contributors</p>
-        <ul className="list-disc list-inside text-sm">
-          <li>SHIVANSH GUPTA</li>
-          <li>IRON MAN</li>
-          <li>TVN Rahul Bharadwaj</li>
-          <li>Ayush Kumar</li>
-        </ul>
-      </div>
     </div>
   )
 }
