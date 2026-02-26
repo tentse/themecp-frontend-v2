@@ -1,20 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
-const STORAGE_KEY = 'themecp-welcome-v2-seen'
 const DISCORD_URL = 'https://discord.gg/ncnut8Zw63'
 
 export default function WelcomeModal() {
-  const [show, setShow] = useState(false)
+  // Show by default on every page load/tab
+  const [show, setShow] = useState(true)
   const dialogRef = useRef<HTMLDialogElement>(null)
-
-  useEffect(() => {
-    try {
-      const seen = localStorage.getItem(STORAGE_KEY)
-      if (!seen) setShow(true)
-    } catch {
-      setShow(true)
-    }
-  }, [])
 
   useEffect(() => {
     if (!show || !dialogRef.current) return
@@ -25,11 +16,6 @@ export default function WelcomeModal() {
   }, [show])
 
   const handleDismiss = () => {
-    try {
-      localStorage.setItem(STORAGE_KEY, 'true')
-    } catch {
-      // ignore
-    }
     setShow(false)
   }
 
