@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { LevelProvider } from '@/contexts/LevelContext'
 import Layout from '@/components/layout/Layout'
 import ProfileLayout from '@/components/layout/ProfileLayout'
+import WelcomeModal from '@/components/WelcomeModal'
 
 // Pages - will be implemented in subsequent steps
 import HomePage from '@/pages/HomePage'
@@ -77,6 +78,7 @@ function PrivateRoute({ children }: Readonly<{ children: React.ReactNode }>) {
 function AppContent() {
   return (
     <LevelProvider>
+      <WelcomeModal />
       <PageViewTracker />
       <Routes>
         <Route element={<Layout />}>
