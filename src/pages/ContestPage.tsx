@@ -13,10 +13,10 @@ type Phase = 'NO_SESSION' | 'REVIEW'
 function RatingBox({ label, rating }: Readonly<{ label: string; rating: number }>) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-3 py-4 shadow-sm flex flex-col min-w-0">
-      <div className="text-xs font-medium text-gray-600">{label}</div>
+      <div className="text-sm font-semibold text-gray-900">{label}</div>
       <div
-        className="mt-2 rounded-lg px-3 py-2.5 text-center font-mono text-lg font-semibold flex-1 flex items-center justify-center"
-        style={{ backgroundColor: getRatingColor(rating) }}
+        className="mt-2 rounded-lg px-4 py-3 text-center font-mono text-xl font-bold flex-1 flex items-center justify-center"
+        style={{ backgroundColor: `${getRatingColor(rating)}1A` }}
       >
         {rating}
       </div>
@@ -92,12 +92,12 @@ function NoSessionView(props: Readonly<{
     <PageCard>
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold">Create contest</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Create contest</h2>
+          <p className="mt-1 text-sm text-gray-800">
             Pick a level, preview the expected problem ratings, then generate your contest.
           </p>
         </div>
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-gray-800">
           Suggested level:{' '}
           <span className="font-mono font-semibold text-gray-900">{props.suggestedLevel}</span>
         </div>
@@ -117,7 +117,7 @@ function NoSessionView(props: Readonly<{
             className="mt-2 w-full max-w-xs rounded-xl border border-gray-200 px-4 py-3 focus:ring-1 focus:ring-black focus:outline-none"
             placeholder="e.g. 20"
           />
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-gray-800">
             Refer the contest level sheet for details.{' '}
             <Link to="/levels" className="font-medium text-blue-600 underline hover:text-blue-800">
               Level sheet
@@ -136,7 +136,7 @@ function NoSessionView(props: Readonly<{
           </label>
           <div className="mt-2 max-w-xs">
             {props.themesLoading ? (
-              <div className="min-h-[3rem] rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-base text-gray-500">
+              <div className="min-h-[3rem] rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-base text-gray-800">
                 Loading themes…
               </div>
             ) : props.themes.length === 0 ? (
@@ -164,10 +164,10 @@ function NoSessionView(props: Readonly<{
           <div className="flex flex-row flex-wrap items-start justify-between gap-3">
             <div>
               <div className="text-sm font-medium text-gray-700">Expected problem ratings</div>
-              <div className="mt-1 text-xs text-gray-500">Preview based on the selected contest level preset.</div>
+              <div className="mt-1 text-xs text-gray-700">Preview based on the selected contest level preset.</div>
             </div>
             <div className="rounded-xl border border-gray-200 bg-gray-50 px-5 py-2.5 shrink-0 min-w-[140px]">
-              <div className="text-xs font-medium text-gray-600">Duration</div>
+              <div className="text-xs font-semibold text-gray-800">Duration</div>
               <div className="font-mono text-lg font-semibold text-gray-900">{props.duration == null ? '—' : `${props.duration} min`}</div>
             </div>
           </div>
@@ -180,7 +180,7 @@ function NoSessionView(props: Readonly<{
               <RatingBox label="P4" rating={props.levelObj.p4_rating} />
             </div>
           ) : (
-            <div className="mt-4 rounded-xl border border-dashed border-gray-200 p-6 text-sm text-gray-600">
+            <div className="mt-4 rounded-xl border border-dashed border-gray-200 p-6 text-sm text-gray-800">
               Enter a valid level to preview expected ratings.
             </div>
           )}
@@ -212,8 +212,8 @@ function ReviewView(props: Readonly<{
     <PageCard>
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold">Review problems</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Review problems</h2>
+          <p className="mt-1 text-sm text-gray-800">
             Preview the generated problems. When you’re ready, start the contest.
           </p>
         </div>
@@ -247,7 +247,7 @@ function ReviewView(props: Readonly<{
               >
                 <div>
                   <div className="text-sm font-medium text-gray-700">{label}</div>
-                  <div className="mt-1 font-mono text-xs text-gray-500">
+                  <div className="mt-1 font-mono text-xs text-gray-800">
                     {p.contestId}/{p.index}
                   </div>
                 </div>
@@ -282,7 +282,7 @@ function ReviewView(props: Readonly<{
             {props.regenerating ? 'Regenerating...' : 'Regenerate contest'}
           </button>
         </div>
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-gray-800">
           Contest starts 15 seconds after you press start.
         </div>
       </div>
