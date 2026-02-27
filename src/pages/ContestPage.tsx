@@ -213,18 +213,18 @@ function ReviewView(props: Readonly<{
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Review problems</h2>
-          <p className="mt-1 text-sm text-gray-800">
+          <p className="mt-1 text-sm font-medium text-gray-900">
             Preview the generated problems. When you’re ready, start the contest.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700">
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
             Level: <span className="font-mono">{props.session.level}</span>
           </span>
-          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700">
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
             Theme: <span className="font-mono">{props.session.theme}</span>
           </span>
-          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700">
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
             Duration: <span className="font-mono">{props.session.duration_in_min}m</span>
           </span>
         </div>
@@ -246,8 +246,8 @@ function ReviewView(props: Readonly<{
                 className="group flex-1 min-w-[140px] flex items-start justify-between gap-4"
               >
                 <div>
-                  <div className="text-sm font-medium text-gray-700">{label}</div>
-                  <div className="mt-1 font-mono text-xs text-gray-800">
+                  <div className="text-sm font-semibold text-gray-900">{label}</div>
+                  <div className="mt-1 font-mono text-xs text-gray-900">
                     {p.contestId}/{p.index}
                   </div>
                 </div>
@@ -262,7 +262,7 @@ function ReviewView(props: Readonly<{
                 type="button"
                 onClick={() => props.onReRoll(i + 1)}
                 disabled={props.reRollingProblem !== null}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-900 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
               >
                 {props.reRollingProblem === i + 1 ? 'Re-rolling...' : 'Re-roll'}
               </button>
@@ -282,7 +282,7 @@ function ReviewView(props: Readonly<{
             {props.regenerating ? 'Resetting...' : 'Reset contest'}
           </button>
         </div>
-        <div className="text-sm text-gray-800">
+        <div className="text-sm font-medium text-gray-900">
           Contest starts 15 seconds after you press start.
         </div>
       </div>
