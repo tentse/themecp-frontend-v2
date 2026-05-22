@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const DISCORD_URL = 'https://discord.gg/ncnut8Zw63'
 
@@ -30,28 +31,30 @@ export default function WelcomeModal() {
     >
       <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-xl p-6 sm:p-8 text-slate-800">
         <h2 id="welcome-modal-title" className="text-xl font-bold text-slate-900 mb-4">
-          Welcome to ThemeCP — New Version
+          ThemeCP v1 data migrated
         </h2>
         <div className="space-y-3 text-slate-700">
           <p>
-            This is the new ThemeCP. We’re glad you’re here.
-          </p>
-          <p className="font-medium text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-            Please note: any contest you start or complete now will not be retained. We’re still in transition.
+            Your ThemeCP v1 history has been migrated to v2. If you used v1, please verify it on the{' '}
+            <Link
+              to="/profile/history"
+              onClick={handleDismiss}
+              className="text-indigo-600 hover:text-indigo-800 underline font-medium"
+            >
+              Contest History
+            </Link>{' '}
+            page.
           </p>
           <p>
-            Your previous ThemeCP history will be migrated to this version soon. Thank you for your patience.
-          </p>
-          <p>
-            Found a bug or have feedback? Share it in our{' '}
+            Spot an issue? Report it on our{' '}
             <a
               href={DISCORD_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-indigo-600 hover:text-indigo-800 underline font-medium"
             >
-              Discord channel.
-            </a>
+              Discord
+            </a>.
           </p>
         </div>
         <button
