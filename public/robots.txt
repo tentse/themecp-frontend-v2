@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /profile
+Disallow: /contest
+Disallow: /login
+Disallow: /auth0-demo
+
+Sitemap: https://themecp-v2.vercel.app/sitemap.xml
