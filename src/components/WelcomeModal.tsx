@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 
 const DISCORD_URL = 'https://discord.gg/ncnut8Zw63'
+const THEMECP_V1_URL = 'https://themecp.vercel.app/'
 
 export default function WelcomeModal() {
   // Show by default on every page load/tab
@@ -31,22 +31,27 @@ export default function WelcomeModal() {
     >
       <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-xl p-6 sm:p-8 text-slate-800">
         <h2 id="welcome-modal-title" className="text-xl font-bold text-slate-900 mb-4">
-          ThemeCP v1 data migrated
+          Server under maintenance
         </h2>
         <div className="space-y-3 text-slate-700">
           <p>
-            Your ThemeCP v1 history has been migrated to v2. If you used v1, please verify it on the{' '}
-            <Link
-              to="/profile/history"
-              onClick={handleDismiss}
-              className="text-indigo-600 hover:text-indigo-800 underline font-medium"
-            >
-              Contest History
-            </Link>{' '}
-            page.
+            The ThemeCP v2 server is currently under work. Some features may be
+            unavailable or slow to respond.
           </p>
           <p>
-            Spot an issue? Report it on our{' '}
+            In the meantime, please use{' '}
+            <a
+              href={THEMECP_V1_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-600 hover:text-indigo-800 underline font-medium"
+            >
+              ThemeCP v1
+            </a>{' '}
+            to continue without interruption.
+          </p>
+          <p>
+            Questions or issues? Reach out on our{' '}
             <a
               href={DISCORD_URL}
               target="_blank"
