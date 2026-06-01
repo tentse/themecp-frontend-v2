@@ -12,6 +12,12 @@ const CAT_SOURCES = [
 
 const APP_VERSION = '2.0.0'
 
+// Add new contributors here — they'll automatically appear in the footer
+const CONTRIBUTORS: { name: string; github: string }[] = [
+  { name: 'Tenzin Tsering', github: 'https://github.com/tentse' },
+  { name: 'Devaj Rathore', github: 'https://github.com/mesonicDEVAJ18' },
+]
+
 export default function Footer() {
   const [catVisible, setCatVisible] = useState(false)
   const [catUrl, setCatUrl] = useState('')
@@ -236,6 +242,35 @@ export default function Footer() {
                 </a>{' '}
                 and all contributors.
               </p>
+              {/* Contributors list */}
+              <ul className="flex flex-col gap-2">
+                {CONTRIBUTORS.map((c, i) => {
+                  const username = c.github.replace('https://github.com/', '')
+                  const avatarUrl = `https://github.com/${username}.png?size=48`
+                  const isFirst = i === 0
+                  return (
+                    <li key={c.github}>
+                      <a
+                        href={c.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`transition-colors inline-flex items-center gap-2 group ${isFirst ? 'text-gray-300 hover:text-white text-xs' : 'text-gray-500 hover:text-gray-300 text-[10px]'}`}
+                      >
+                        <img
+                          src={avatarUrl}
+                          alt={c.name}
+                          className={`rounded-full object-cover ring-1 ring-white/10 group-hover:ring-white/30 transition-all shrink-0 ${isFirst ? 'w-8 h-8' : 'w-5 h-5'}`}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none'
+                          }}
+                        />
+                        {c.name}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+
               <p className="text-gray-500 text-xs leading-relaxed">
                 Special thanks to{' '}
                 <a
