@@ -28,8 +28,13 @@ export default function Footer() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const clearCatTimeout = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
   }
+
+  useEffect(() => () => clearCatTimeout(), [])
 
   const trySource = (idx: number) => {
     const r = Math.floor(Math.random() * 9999)
