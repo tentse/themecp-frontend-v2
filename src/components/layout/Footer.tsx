@@ -85,6 +85,9 @@ export default function Footer() {
           <div
             className="relative rounded-2xl overflow-hidden shadow-2xl max-w-sm w-[90%] border border-white/10"
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Random cat"
           >
             <div className="bg-[#111] px-4 py-3 flex items-center justify-between">
               <span className="text-white font-semibold text-sm tracking-wide">🐱 Random Cat</span>
