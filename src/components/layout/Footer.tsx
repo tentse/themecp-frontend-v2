@@ -2,12 +2,11 @@ import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import discord from '@/assets/discord.jpg'
 
-// Direct image URLs — no fetch(), no CORS issues
-// Each is called with a cache-busting param to get a fresh cat every time
+// Curated, SFW cat source ("Cat as a Service"), called with a cache-busting
+// param for a fresh cat each time. Used directly as an <img> src — no fetch()/CORS.
+// (loremflickr = un-moderated Flickr photos; placekitten = defunct — both removed.)
 const CAT_SOURCES = [
   (r: number) => `https://cataas.com/cat?${r}`,
-  (r: number) => `https://loremflickr.com/400/300/cat?random=${r}`,
-  (r: number) => `https://placekitten.com/${380 + (r % 40)}/${280 + (r % 40)}`,
 ]
 
 const APP_VERSION = '2.0.0'
