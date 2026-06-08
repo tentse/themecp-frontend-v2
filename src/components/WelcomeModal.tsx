@@ -31,15 +31,11 @@ export default function WelcomeModal() {
     >
       <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-xl p-6 sm:p-8 text-slate-800">
         <h2 id="welcome-modal-title" className="text-xl font-bold text-slate-900 mb-4">
-          Server under maintenance
+          Welcome to ThemeCP v2
         </h2>
         <div className="space-y-3 text-slate-700">
           <p>
-            The ThemeCP v2 server is currently under work. Some features may be
-            unavailable or slow to respond.
-          </p>
-          <p>
-            In the meantime, please use{' '}
+            We've recently migrated data from{' '}
             <a
               href={THEMECP_V1_URL}
               target="_blank"
@@ -48,10 +44,15 @@ export default function WelcomeModal() {
             >
               ThemeCP v1
             </a>{' '}
-            to continue without interruption.
+            over to here. You may notice some inconsistencies between the data on
+            v1 and v2 for now.
           </p>
           <p>
-            Questions or issues? Reach out on our{' '}
+            These will be resolved soon as ThemeCP v2 becomes the official ThemeCP
+            website.
+          </p>
+          <p>
+            If you run into any problems, please reach out to me on{' '}
             <a
               href={DISCORD_URL}
               target="_blank"
