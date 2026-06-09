@@ -286,7 +286,7 @@ export default function Footer() {
               <p className="text-gray-500 text-xs leading-relaxed">
                 Special thanks to{' '}
                 <a
-                  href="https://codeforces.com"
+                  href="https://codeforces.com/profile/MikeMirzayanov"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
@@ -295,7 +295,7 @@ export default function Footer() {
                 </a>{' '}
                 &amp;{' '}
                 <a
-                  href="https://codeforces.com/blog/entry/99287"
+                  href="https://codeforces.com/profile/KAN"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
