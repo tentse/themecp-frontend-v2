@@ -26,52 +26,68 @@ export default function LevelsPage() {
             <div className="flex items-center justify-center p-3 sm:p-4">P3</div>
             <div className="flex items-center justify-center p-3 sm:p-4">P4</div>
           </div>
-          {levels.map((item) => (
-            <div
-              key={item.id}
-              className="grid grid-cols-7 gap-3 sm:gap-6 py-3 sm:py-5 border-b border-gray-200 items-center min-w-[820px] hover:bg-gray-50 transition-colors rounded text-sm sm:text-base"
-            >
-              <div className="flex items-center justify-center rounded-lg bg-gray-100 px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 font-mono font-bold">
-                {item.level}
-              </div>
-              <div
-                className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
-                style={{ backgroundColor: getRatingColor(item.performance) }}
+          {levels.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4 text-center border-2 border-dashed border-gray-200 rounded-xl">
+              <p className="text-base font-semibold text-gray-800">Failed to fetch level sheet</p>
+              <p className="text-sm text-gray-500 max-w-xs leading-relaxed">
+                We couldn't load the levels data. Please try again.
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-1 rounded-xl bg-black px-6 py-2.5 text-sm font-medium text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
               >
-                {item.duration_in_min} min
-              </div>
-              <div
-                className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium italic"
-                style={{ backgroundColor: getRatingColor(item.performance) }}
-              >
-                {item.performance}
-              </div>
-              <div
-                className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
-                style={{ backgroundColor: getRatingColor(item.p1_rating) }}
-              >
-                {item.p1_rating}
-              </div>
-              <div
-                className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
-                style={{ backgroundColor: getRatingColor(item.p2_rating) }}
-              >
-                {item.p2_rating}
-              </div>
-              <div
-                className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
-                style={{ backgroundColor: getRatingColor(item.p3_rating) }}
-              >
-                {item.p3_rating}
-              </div>
-              <div
-                className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
-                style={{ backgroundColor: getRatingColor(item.p4_rating) }}
-              >
-                {item.p4_rating}
-              </div>
+                Retry
+              </button>
             </div>
-          ))}
+
+          ) : (
+            levels.map((item) => (
+              <div
+                key={item.id}
+                className="grid grid-cols-7 gap-3 sm:gap-6 py-3 sm:py-5 border-b border-gray-200 items-center min-w-[820px] hover:bg-gray-50 transition-colors rounded text-sm sm:text-base"
+              >
+                <div className="flex items-center justify-center rounded-lg bg-gray-100 px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 font-mono font-bold">
+                  {item.level}
+                </div>
+                <div
+                  className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
+                  style={{ backgroundColor: getRatingColor(item.performance) }}
+                >
+                  {item.duration_in_min} min
+                </div>
+                <div
+                  className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium italic"
+                  style={{ backgroundColor: getRatingColor(item.performance) }}
+                >
+                  {item.performance}
+                </div>
+                <div
+                  className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
+                  style={{ backgroundColor: getRatingColor(item.p1_rating) }}
+                >
+                  {item.p1_rating}
+                </div>
+                <div
+                  className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
+                  style={{ backgroundColor: getRatingColor(item.p2_rating) }}
+                >
+                  {item.p2_rating}
+                </div>
+                <div
+                  className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
+                  style={{ backgroundColor: getRatingColor(item.p3_rating) }}
+                >
+                  {item.p3_rating}
+                </div>
+                <div
+                  className="flex items-center justify-center rounded-lg px-4 py-3 sm:px-6 sm:py-4 min-h-12 sm:min-h-16 text-center font-medium"
+                  style={{ backgroundColor: getRatingColor(item.p4_rating) }}
+                >
+                  {item.p4_rating}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
