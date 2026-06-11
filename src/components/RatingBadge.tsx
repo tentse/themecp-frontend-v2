@@ -12,7 +12,7 @@ export default function RatingBadge({ rating, label, className = '' }: RatingBad
 
   return (
     <span
-      className={`inline-block rounded px-2 py-0.5 font-medium ${className}`}
+      className={`inline-block rounded-[5px] px-2 py-0.5 font-medium ${className}`}
       style={{ backgroundColor: color, color: rating != null && rating >= 2400 ? '#fff' : '#000' }}
     >
       {text}

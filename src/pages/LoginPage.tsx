@@ -45,12 +45,12 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 px-4">
-      <div className="rounded-xl bg-white p-6 sm:p-8 md:p-10 shadow-sm max-w-md w-full">
+      <div className="nb-card p-6 sm:p-8 md:p-10 max-w-md w-full">
         <div className="flex flex-col items-center justify-center min-h-[320px] h-full my-auto">
           <h2 className="mb-6 sm:mb-8 text-xl sm:text-2xl font-bold text-center">Sign in to ThemeCP</h2>
           <button
             onClick={handleLogin}
-            className="w-full bg-black text-white rounded-lg px-6 py-3 font-medium hover:bg-gray-800 transition-colors cursor-pointer"
+            className="w-full bg-black text-white rounded-[10px] px-6 py-3 font-bold btn-press cursor-pointer"
           >
             Sign In / Log in
           </button>

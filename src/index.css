@@ -1,10 +1,37 @@
 @import "tailwindcss";
 
+@theme {
+  /* Make monospace the DEFAULT app font (overrides Tailwind's --font-sans so it
+     cascades to the whole app, exactly like v1's global monospace). */
+  --font-sans: ui-monospace, SFMono-Regular, 'SF Mono', Monaco, 'Cascadia Code',
+    'Roboto Mono', Menlo, Consolas, monospace;
+
+  /* v1 accent palette (DESIGN_GUIDE §2.2) — generates bg-action / text-discord / etc. */
+  --color-action: #24a4f2;   /* refresh / CTA blue          */
+  --color-discord: #5562ea;  /* discord brand               */
+  --color-linkblue: #00008b; /* darkblue problem links      */
+  --color-hotpink: #ff69b4;  /* animated nav underline      */
+  --color-cfline: #000033;   /* ThemeCP rating chart series */
+  --color-warn: #ff0000;     /* warnings, timers, the "CP"  */
+
+  /* radius scale (§2.4) */
+  --radius-xs: 5px;
+  --radius-sm: 10px;
+  --radius-md: 15px;
+  --radius-lg: 20px;
+  --radius-pill: 30px;
+}
+
+html {
+  /* Scale the whole UI up to v1's base (20px). All Tailwind text-*/spacing
+     utilities are rem-based, so they grow with this. */
+  font-size: 125%;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 
-    'Helvetica Neue', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-weight: 800; /* heavier base for a thicker, bolder, v1-like read */
+  /* No font-smoothing override: v1 used the browser default, which renders the
+     monospace text heavier/thicker on macOS than `antialiased` would. */
 }
 
 button,
@@ -13,9 +40,83 @@ a[href],
   cursor: pointer;
 }
 
-.font-mono {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Monaco, 'Cascadia Code', 
-    'Roboto Mono', Menlo, Consolas, monospace;
+@layer components {
+  /* Containers (§4.3) */
+  .nb-card {
+    @apply bg-white border-2 border-black rounded-[10px];
+  }
+  .nb-panel {
+    @apply bg-white border-[3px] border-black rounded-[20px];
+  }
+
+  /* Buttons (§4.1) — fade-on-hover is the v1 default */
+  .btn-primary {
+    @apply bg-black text-white rounded-[10px] px-5 py-2 transition-opacity duration-150 hover:opacity-80 active:opacity-50;
+  }
+  .btn-pill {
+    @apply rounded-[30px];
+  }
+  .btn-action {
+    @apply bg-action text-white rounded-[10px] px-5 py-2 transition-opacity duration-150 hover:opacity-80 active:opacity-50;
+  }
+
+  /* Inputs (§4.2): rest = 1px grey; focus = 3px black */
+  .nb-input {
+    @apply border border-gray-500 rounded-[5px] px-2 outline-none transition-all duration-150 focus:border-[3px] focus:border-black;
+  }
+}
+
+/* Hard-shadow PRESS buttons (§2.5/§4.1) — login / add-handle */
+.btn-press {
+  box-shadow: 5px 5px 10px 1px black;
+  transition: 0.15s;
+}
+.btn-press:active {
+  box-shadow: none;
+  margin-left: 3px;
+  margin-top: 2px;
+}
+
+/* Hotpink animated nav underline (§4.4) */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 0.1em;
+  background: var(--color-hotpink);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 300ms, opacity 300ms;
+}
+.nav-underline:hover::after,
+.nav-underline:focus::after,
+.nav-underline.is-active::after {
+  transform: scaleX(1);
+}
+
+/* Typewriter hero (§4.9) */
+.typing-demo {
+  width: 18ch;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid;
+  font-weight: 700;
+  animation: typing 2s steps(18), blink 0.5s step-end infinite alternate;
+}
+@keyframes typing {
+  from {
+    width: 0;
+  }
+}
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
 }
 
 /* Auth0 Demo Styling */
@@ -240,16 +341,16 @@ a[href],
     padding: 2rem;
     margin: 1rem;
   }
-  
+
   .main-title {
     font-size: 2.2rem;
   }
-  
+
   .button {
     padding: 1rem 2rem;
     font-size: 1.1rem;
   }
-  
+
   .auth0-logo {
     width: 120px;
   }

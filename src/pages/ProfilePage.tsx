@@ -64,7 +64,7 @@ export default function ProfilePage() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
       {/* Left Column - User Details, Graph, and Pie Chart */}
       <div className="lg:col-span-2 space-y-6 sm:space-y-8">
-        <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+        <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
           <div className="space-y-3 sm:space-y-4">
           <p style={{ color: getRatingColor(rating) }} className="text-xl">
             {user.rating_label}
@@ -101,13 +101,13 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+        <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
           <label className="flex items-center gap-3 mb-4 cursor-pointer">
             <input
               type="checkbox"
               checked={showCfGraph}
               onChange={(e) => setShowCfGraph(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-200 focus:ring-1 focus:ring-black focus:ring-offset-0"
+              className="w-4 h-4 rounded-[3px] border-2 border-black accent-black focus:ring-1 focus:ring-black focus:ring-offset-0"
             />
             <span>Plot CF rating graph</span>
           </label>
@@ -121,11 +121,11 @@ export default function ProfilePage() {
           )}
         </div>
 
-        <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+        <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
           <ContestHeatMap />
         </div>
 
-        <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+        <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
           {historyLoading ? (
             <p>Loading...</p>
           ) : (

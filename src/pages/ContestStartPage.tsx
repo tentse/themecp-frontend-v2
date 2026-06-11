@@ -24,7 +24,7 @@ function Spinner() {
 
 function PageCard({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 rounded-2xl bg-white shadow-sm">
+    <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 nb-card">
       {children}
     </div>
   )
@@ -153,7 +153,7 @@ export default function ContestStartPage() {
         <p className="text-red-600">{error}</p>
         <button
           onClick={() => navigate('/contest')}
-          className="mt-4 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800"
+          className="mt-4 btn-primary px-4"
         >
           Back to Contest
         </button>
@@ -167,7 +167,7 @@ export default function ContestStartPage() {
         <p className="text-gray-600">No running contest. Start one from the contest page.</p>
         <button
           onClick={() => navigate('/contest')}
-          className="mt-4 rounded-xl bg-black px-4 py-2 text-white hover:bg-gray-800"
+          className="mt-4 btn-primary px-4"
         >
           Go to Contest
         </button>
@@ -198,7 +198,7 @@ export default function ContestStartPage() {
           <CountdownTimer
             targetTimestamp={startsAtMs}
             onExpire={load}
-            className="text-4xl font-mono"
+            className="inline-block border-2 border-black rounded-[10px] bg-[rgb(210,206,206)] px-8 py-6 text-4xl font-mono"
           />
         </div>
       </PageCard>
@@ -209,7 +209,7 @@ export default function ContestStartPage() {
 
   return (
     <PageCard>
-      <div className="rounded-lg border-2 border-gray-200 bg-gray-50 p-3 sm:p-4 mb-6">
+      <div className="rounded-[10px] border-2 border-black bg-gray-50 p-3 sm:p-4 mb-6">
         <div className="text-red-600 font-medium mb-2">NOTE:</div>
         <ul className="text-sm space-y-1">
           <li>1. Solve problems in order (P1 before P2, etc.).</li>
@@ -224,7 +224,7 @@ export default function ContestStartPage() {
         <button
           onClick={handleRefresh}
           disabled={refreshDisabled}
-          className="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+          className="btn-action rounded-[15px] px-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {(() => {
             if (refreshing) return 'Refreshing...'
@@ -234,19 +234,19 @@ export default function ContestStartPage() {
         </button>
       </div>
 
-      <table className="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
+      <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-50">
-            <th className="border border-gray-100 p-2 sm:p-3 w-12 text-left font-semibold text-sm sm:text-base">
+            <th className="border border-black p-2 sm:p-3 w-12 text-left font-semibold text-sm sm:text-base">
               #
             </th>
-            <th className="border border-gray-100 p-2 sm:p-3 text-left font-semibold text-sm sm:text-base">
+            <th className="border border-black p-2 sm:p-3 text-left font-semibold text-sm sm:text-base">
               Problem
             </th>
-            <th className="border border-gray-100 p-2 sm:p-3 w-20 sm:w-24 text-left font-semibold text-sm sm:text-base">
+            <th className="border border-black p-2 sm:p-3 w-20 sm:w-24 text-left font-semibold text-sm sm:text-base">
               Rating
             </th>
-            <th className="border border-gray-100 p-2 sm:p-3 w-24 sm:w-28 text-left font-semibold text-sm sm:text-base">
+            <th className="border border-black p-2 sm:p-3 w-24 sm:w-28 text-left font-semibold text-sm sm:text-base">
               Status
             </th>
           </tr>
@@ -257,8 +257,8 @@ export default function ContestStartPage() {
             const solved = statuses[i] === 'SOLVED'
             return (
               <tr key={`${p.contestId}-${p.index}`} className="hover:bg-gray-50 transition-colors">
-                <td className="border border-gray-100 p-2 sm:p-3 text-sm sm:text-base">{num}</td>
-                <td className="border border-gray-100 p-2 sm:p-3 text-sm sm:text-base">
+                <td className="border border-black p-2 sm:p-3 text-sm sm:text-base">{num}</td>
+                <td className="border border-black p-2 sm:p-3 text-sm sm:text-base">
                   <a
                     href={buildCodeforcesUrl(p.contestId, p.index)}
                     target="_blank"
@@ -269,13 +269,13 @@ export default function ContestStartPage() {
                   </a>
                 </td>
                 <td
-                  className="border border-gray-100 p-2 sm:p-3 font-medium text-sm sm:text-base"
+                  className="border border-black p-2 sm:p-3 font-medium text-sm sm:text-base"
                   style={{ backgroundColor: getRatingColor(p.rating) }}
                 >
                   {p.rating}
                 </td>
                 <td
-                  className="border border-gray-100 p-2 sm:p-3 font-medium text-sm sm:text-base"
+                  className="border border-black p-2 sm:p-3 font-medium text-sm sm:text-base"
                   style={{
                     backgroundColor: solved ? '#D4EDC9' : '#FFE3E3',
                   }}
@@ -292,7 +292,7 @@ export default function ContestStartPage() {
         <button
           onClick={handleEndContest}
           disabled={ending}
-          className="rounded-xl bg-red-600 px-6 py-2 text-white hover:bg-red-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+          className="rounded-[10px] bg-red-600 px-6 py-2 text-white hover:opacity-80 active:opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer"
         >
           {ending ? 'Ending...' : 'End Contest'}
         </button>
