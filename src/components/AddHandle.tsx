@@ -95,18 +95,18 @@ export default function AddHandle() {
           onChange={(e) => setHandleInput(e.target.value)}
           placeholder="Codeforces Handle..."
           disabled={verifying}
-          className="flex-1 rounded-lg border border-gray-200 px-4 py-3 focus:ring-1 focus:ring-black focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+          className="flex-1 nb-input px-4 py-3 disabled:bg-gray-100 disabled:cursor-not-allowed"
         />
         <button
           onClick={handleFindProblem}
           disabled={loading}
-          className="w-full sm:w-auto rounded-xl bg-black px-5 py-3 text-white hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+          className="w-full sm:w-auto btn-press rounded-[10px] bg-black px-5 py-3 text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {loading ? 'Loading...' : 'Get Problem'}
         </button>
       </div>
       {verificationProblem && (
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 space-y-4">
+        <div className="rounded-[10px] border-2 border-black bg-gray-50 p-6 space-y-4">
           <p className="text-sm">
             Submit a <strong>COMPILATION_ERROR</strong> to this problem on Codeforces to verify ownership, then click Verify below.
           </p>
@@ -119,7 +119,7 @@ export default function AddHandle() {
             href={buildCodeforcesUrl(verificationProblem.contestID, verificationProblem.index)}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 underline hover:no-underline"
+            className="text-[var(--color-linkblue)] underline hover:no-underline"
           >
             Open problem: {verificationProblem.contestID}/{verificationProblem.index} (rating: {verificationProblem.rating})
           </a>
@@ -127,7 +127,7 @@ export default function AddHandle() {
             <button
               onClick={handleVerify}
               disabled={verifying || isExpired}
-              className="w-full sm:w-auto rounded-xl bg-green-600 px-5 py-3 text-white hover:bg-green-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="w-full sm:w-auto rounded-[10px] bg-green-600 px-5 py-3 text-white hover:opacity-80 active:opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer"
             >
               {verifying ? 'Verifying...' : 'Verify'}
             </button>

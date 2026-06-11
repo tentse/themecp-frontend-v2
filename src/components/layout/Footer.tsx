@@ -144,8 +144,8 @@ export default function Footer() {
 
       <footer className="bg-black text-white mt-auto">
         {/* Main footer content */}
-        <div className="w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
+        <div className="w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
 
             {/* Brand column */}
             <div className="flex flex-col gap-3">
@@ -320,7 +320,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10">
-          <div className="w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+          <div className="w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
             <p className="text-gray-500 text-xs">
               © {new Date().getFullYear()} ThemeCP. All rights reserved.
             </p>

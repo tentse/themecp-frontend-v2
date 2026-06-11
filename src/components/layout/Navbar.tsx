@@ -21,7 +21,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="flex flex-col md:flex-row md:items-center md:justify-between px-4 sm:px-6 py-4 text-black border-b border-gray-100 bg-white">
+    <nav className="flex flex-col md:flex-row md:items-center md:justify-between px-4 sm:px-6 py-4 text-black bg-white">
       <div className="flex items-center justify-between">
         <img
           src={logo}
@@ -53,7 +53,7 @@ export default function Navbar() {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `nav-underline block text-inherit no-underline py-2 px-2 cursor-pointer ${isActive ? 'is-active font-bold' : ''}`
               }
             >
               Home
@@ -63,7 +63,7 @@ export default function Navbar() {
             <NavLink
               to="/guide"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `nav-underline block text-inherit no-underline py-2 px-2 cursor-pointer ${isActive ? 'is-active font-bold' : ''}`
               }
             >
               Guide
@@ -73,7 +73,7 @@ export default function Navbar() {
             <NavLink
               to="/levels"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `nav-underline block text-inherit no-underline py-2 px-2 cursor-pointer ${isActive ? 'is-active font-bold' : ''}`
               }
             >
               Level Sheet
@@ -83,7 +83,7 @@ export default function Navbar() {
             <NavLink
               to="/contest"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `nav-underline block text-inherit no-underline py-2 px-2 cursor-pointer ${isActive ? 'is-active font-bold' : ''}`
               }
             >
               Contest
@@ -94,7 +94,7 @@ export default function Navbar() {
             <NavLink
               to="/profile"
               className={({ isActive }) =>
-                `block text-inherit no-underline py-2 px-2 transition-colors cursor-pointer ${isActive ? 'font-semibold border-b-2 border-black -mb-0.5' : 'hover:text-gray-600'}`
+                `nav-underline block text-inherit no-underline py-2 px-2 cursor-pointer ${isActive ? 'is-active font-bold' : ''}`
               }
             >
               Profile
@@ -105,14 +105,14 @@ export default function Navbar() {
         {isAuthenticated ? (
           <button
             onClick={handleLogout}
-            className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto rounded-xl border border-gray-200 px-4 py-2 hover:bg-gray-50 active:scale-95 transition-all cursor-pointer"
+            className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto rounded-[10px] border-2 border-black bg-white px-4 py-2 text-black hover:bg-black hover:text-white transition-colors duration-150 cursor-pointer"
           >
             Logout
           </button>
         ) : (
           <button
             onClick={() => { setMobileMenuOpen(false); navigate('/login') }}
-            className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto rounded-xl bg-black px-5 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
+            className="mt-4 md:mt-0 md:ml-4 w-full md:w-auto btn-primary"
           >
             Login
           </button>
