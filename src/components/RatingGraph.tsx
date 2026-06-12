@@ -123,10 +123,13 @@ export default function RatingGraph({ themecpData, cfData = [] }: RatingGraphPro
         type: 'line',
         color: '#000033',
         data: [],
-        marker: { 
-          enabled: true, 
-          radius: 4,
+        marker: {
+          enabled: true,
+          radius: 3,
           symbol: 'circle',
+          fillColor: '#ffffff',
+          lineWidth: 2,
+          lineColor: '#000000',
           states: {
             hover: {
               enabled: true,
@@ -140,10 +143,13 @@ export default function RatingGraph({ themecpData, cfData = [] }: RatingGraphPro
         type: 'line',
         color: '#ff0000',
         data: [],
-        marker: { 
-          enabled: true, 
-          radius: 4,
+        marker: {
+          enabled: true,
+          radius: 3,
           symbol: 'circle',
+          fillColor: '#ffffff',
+          lineWidth: 2,
+          lineColor: '#000000',
           states: {
             hover: {
               enabled: true,

@@ -7,19 +7,19 @@ export default function HomePage() {
   return (
       <div className="space-y-16">
       <div className="flex flex-col items-center justify-center py-12 sm:py-16 md:py-20">
-        <h1 className="text-6xl sm:text-6xl md:text-6xl font-bold mb-6 sm:mb-8 text-center px-4">
-          Welcome to Theme<span className="text-red-600">CP</span>
+        <h1 className="typing-demo text-3xl sm:text-5xl md:text-6xl mb-6 sm:mb-8 mx-auto">
+          Welcome to Theme<span className="text-[var(--color-warn)]">CP</span>
         </h1>
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
           <button
             onClick={() => navigate('/guide')}
-            className="w-full sm:w-auto rounded-xl bg-black px-6 py-3 text-white text-base sm:text-lg font-medium hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
+            className="w-full sm:w-auto btn-primary btn-pill px-6 py-3 text-base sm:text-lg font-bold"
           >
             Get Started
           </button>
           <button
             onClick={() => window.open('https://discord.gg/ncnut8Zw63', '_blank')}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-white text-base sm:text-lg font-medium active:scale-95 transition-all hover:opacity-90 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-[20px] px-6 py-3 text-white text-base sm:text-lg font-bold hover:opacity-90 active:opacity-50 transition-opacity duration-150 cursor-pointer"
             style={{ backgroundColor: '#5865F2' }}
           >
             <img src={discord} alt="" className="w-8 h-8 rounded-full" />
@@ -28,7 +28,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="w-[90%] max-w-[90vw] mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+      <div className="w-[90%] max-w-[90vw] mx-auto p-4 sm:p-6 md:p-8 nb-panel">
         <h2 className="text-2xl sm:text-3xl font-bold mb-4">
           What is Theme<span className="text-red-600">CP</span>?
         </h2>
@@ -39,7 +39,7 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="w-[90%] max-w-[90vw] mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+      <div className="w-[90%] max-w-[90vw] mx-auto p-4 sm:p-6 md:p-8 nb-panel">
         <h2 className="text-2xl sm:text-3xl font-bold mb-6">Why does it work?</h2>
         <ul className="list-disc list-inside space-y-3 sm:space-y-4 text-base sm:text-lg text-gray-700">
           <li>ThemeCP lets you train with problems in the entire difficulty range you have a shot at solving.</li>

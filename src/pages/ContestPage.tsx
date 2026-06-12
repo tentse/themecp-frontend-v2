@@ -12,7 +12,7 @@ type Phase = 'NO_SESSION' | 'REVIEW'
 
 function RatingBox({ label, rating }: Readonly<{ label: string; rating: number }>) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-3 py-4 shadow-sm flex flex-col min-w-0">
+    <div className="rounded-[10px] border-2 border-black bg-white p-3 py-4 flex flex-col min-w-0">
       <div className="text-sm font-semibold text-gray-900">{label}</div>
       <div
         className="mt-2 rounded-lg px-4 py-3 text-center font-mono text-xl font-bold flex-1 flex items-center justify-center"
@@ -34,7 +34,7 @@ function Spinner() {
 
 function PageCard({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 rounded-2xl bg-white shadow-sm">
+    <div className="max-w-3xl mx-auto p-4 sm:p-6 md:p-8 nb-card">
       {children}
     </div>
   )
@@ -47,7 +47,7 @@ function NoHandleGate({ onGoProfile }: Readonly<{ onGoProfile: () => void }>) {
         <p className="text-red-600 font-medium">Please add your Codeforces handle first.</p>
         <button
           onClick={onGoProfile}
-          className="mt-4 rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer"
+          className="mt-4 btn-primary px-6"
         >
           Go to Profile
         </button>
@@ -114,7 +114,7 @@ function NoSessionView(props: Readonly<{
             inputMode="numeric"
             value={props.selectedLevel === '' ? '' : props.selectedLevel}
             onChange={handleLevelChange}
-            className="mt-2 w-full max-w-xs rounded-xl border border-gray-200 px-4 py-3 focus:ring-1 focus:ring-black focus:outline-none"
+            className="mt-2 w-full max-w-xs nb-input px-4 py-3"
             placeholder="e.g. 20"
           />
           <div className="mt-2 text-sm text-gray-800">
@@ -136,11 +136,11 @@ function NoSessionView(props: Readonly<{
           </label>
           <div className="mt-2 max-w-xs">
             {props.themesLoading ? (
-              <div className="min-h-[3rem] rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-base text-gray-800">
+              <div className="min-h-[3rem] rounded-[10px] border-2 border-black bg-white px-5 py-3.5 text-base text-gray-800">
                 Loading themes…
               </div>
             ) : props.themes.length === 0 ? (
-              <div className="min-h-[3rem] rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-base text-amber-600">
+              <div className="min-h-[3rem] rounded-[10px] border-2 border-black bg-white px-5 py-3.5 text-base text-amber-600">
                 No themes available.
               </div>
             ) : (
@@ -148,7 +148,7 @@ function NoSessionView(props: Readonly<{
                 id="contest-theme"
                 value={props.selectedTheme}
                 onChange={(e) => props.onSelectedThemeChange(e.target.value)}
-                className="w-full min-h-[3rem] rounded-xl border border-gray-200 bg-white px-5 py-3.5 text-base font-medium text-gray-900 focus:ring-1 focus:ring-black focus:outline-none cursor-pointer"
+                className="w-full min-h-[3rem] nb-input bg-white px-5 py-3.5 text-base font-medium text-gray-900 cursor-pointer"
               >
                 {props.themes.map((t) => (
                   <option key={t.id} value={t.theme}>
@@ -160,13 +160,13 @@ function NoSessionView(props: Readonly<{
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
+        <div className="rounded-[10px] border-2 border-black bg-white p-5 sm:p-6">
           <div className="flex flex-row flex-wrap items-start justify-between gap-3">
             <div>
               <div className="text-sm font-medium text-gray-700">Expected problem ratings</div>
               <div className="mt-1 text-xs text-gray-700">Preview based on the selected contest level preset.</div>
             </div>
-            <div className="rounded-xl border border-gray-200 bg-gray-50 px-5 py-2.5 shrink-0 min-w-[140px]">
+            <div className="rounded-[10px] border-2 border-black bg-gray-50 px-5 py-2.5 shrink-0 min-w-[140px]">
               <div className="text-xs font-semibold text-gray-800">Duration</div>
               <div className="font-mono text-lg font-semibold text-gray-900">{props.duration == null ? '—' : `${props.duration} min`}</div>
             </div>
@@ -180,7 +180,7 @@ function NoSessionView(props: Readonly<{
               <RatingBox label="P4" rating={props.levelObj.p4_rating} />
             </div>
           ) : (
-            <div className="mt-4 rounded-xl border border-dashed border-gray-200 p-6 text-sm text-gray-800">
+            <div className="mt-4 rounded-[10px] border-2 border-dashed border-black p-6 text-sm text-gray-800">
               Enter a valid level to preview expected ratings.
             </div>
           )}
@@ -189,7 +189,7 @@ function NoSessionView(props: Readonly<{
         <button
           onClick={props.onCreate}
           disabled={props.creating || !props.isLevelValid || !props.selectedTheme || props.themesLoading}
-          className="w-full max-w-xs rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+          className="w-full max-w-xs btn-primary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {props.creating ? 'Generating...' : 'Generate contest'}
         </button>
@@ -218,13 +218,13 @@ function ReviewView(props: Readonly<{
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
+          <span className="rounded-full border-2 border-black bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
             Level: <span className="font-mono">{props.session.level}</span>
           </span>
-          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
+          <span className="rounded-full border-2 border-black bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
             Theme: <span className="font-mono">{props.session.theme}</span>
           </span>
-          <span className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
+          <span className="rounded-full border-2 border-black bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-900">
             Duration: <span className="font-mono">{props.session.duration_in_min}m</span>
           </span>
         </div>
@@ -237,7 +237,7 @@ function ReviewView(props: Readonly<{
           return (
             <div
               key={`${p.contestId}-${p.index}-${i}`}
-              className="flex flex-row flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5"
+              className="flex flex-row flex-wrap items-center gap-3 rounded-[10px] border-2 border-black bg-white p-4 sm:p-5"
             >
               <a
                 href={href}
@@ -252,7 +252,7 @@ function ReviewView(props: Readonly<{
                   </div>
                 </div>
                 <div
-                  className="rounded-xl px-3 py-2 font-mono text-lg font-bold"
+                  className="rounded-[10px] px-3 py-2 font-mono text-lg font-bold"
                   style={{ backgroundColor: getRatingColor(p.rating) }}
                 >
                   {p.rating}
@@ -262,7 +262,7 @@ function ReviewView(props: Readonly<{
                 type="button"
                 onClick={() => props.onReRoll(i + 1)}
                 disabled={props.reRollingProblem !== null}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-900 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                className="rounded-[10px] border-2 border-black bg-white px-3 py-2 text-xs font-semibold text-gray-900 hover:bg-gray-50 active:opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer"
               >
                 {props.reRollingProblem === i + 1 ? 'Re-rolling...' : 'Re-roll'}
               </button>
@@ -277,7 +277,7 @@ function ReviewView(props: Readonly<{
             type="button"
             onClick={() => props.onRegenerate()}
             disabled={props.regenerating || props.starting}
-            className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+            className="rounded-[10px] border-2 border-black bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 active:opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer"
           >
             {props.regenerating ? 'Resetting...' : 'Reset contest'}
           </button>
@@ -291,7 +291,7 @@ function ReviewView(props: Readonly<{
         <button
           onClick={props.onStart}
           disabled={props.starting}
-          className="w-full sm:w-auto rounded-xl bg-black px-6 py-3 text-white font-medium hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+          className="w-full sm:w-auto btn-primary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {props.starting ? 'Starting...' : 'Start contest'}
         </button>

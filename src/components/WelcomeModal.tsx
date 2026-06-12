@@ -29,34 +29,35 @@ export default function WelcomeModal() {
       aria-labelledby="welcome-modal-title"
       onCancel={handleDismiss}
     >
-      <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-xl p-6 sm:p-8 text-slate-800">
-        <h2 id="welcome-modal-title" className="text-xl font-bold text-slate-900 mb-4">
-          Server under maintenance
+      <div className="relative w-full max-w-lg bg-white border-2 border-black rounded-[10px] p-6 sm:p-8 text-black">
+        <h2 id="welcome-modal-title" className="text-xl font-bold text-black mb-4">
+          Welcome to ThemeCP v2
         </h2>
-        <div className="space-y-3 text-slate-700">
+        <div className="space-y-3 text-gray-700">
           <p>
-            The ThemeCP v2 server is currently under work. Some features may be
-            unavailable or slow to respond.
-          </p>
-          <p>
-            In the meantime, please use{' '}
+            We've recently migrated data from{' '}
             <a
               href={THEMECP_V1_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-indigo-600 hover:text-indigo-800 underline font-medium"
+              className="text-[var(--color-linkblue)] hover:opacity-70 underline font-bold"
             >
               ThemeCP v1
             </a>{' '}
-            to continue without interruption.
+            over to here. You may notice some inconsistencies between the data on
+            v1 and v2 for now.
           </p>
           <p>
-            Questions or issues? Reach out on our{' '}
+            These will be resolved soon as ThemeCP v2 becomes the official ThemeCP
+            website.
+          </p>
+          <p>
+            If you run into any problems, please reach out to me on{' '}
             <a
               href={DISCORD_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-indigo-600 hover:text-indigo-800 underline font-medium"
+              className="text-[var(--color-linkblue)] hover:opacity-70 underline font-bold"
             >
               Discord
             </a>.
@@ -65,7 +66,7 @@ export default function WelcomeModal() {
         <button
           type="button"
           onClick={handleDismiss}
-          className="mt-6 w-full rounded-xl bg-slate-900 px-6 py-3 text-white font-medium hover:bg-slate-800 active:scale-[0.99] transition-all"
+          className="mt-6 w-full btn-primary px-6 py-3 font-bold"
         >
           Got it
         </button>

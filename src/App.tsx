@@ -48,7 +48,7 @@ function PrivateRoute({ children }: Readonly<{ children: React.ReactNode }>) {
   // Token exists but user couldn't be loaded (network/backend/CORS etc.) -> don't bounce to login.
   if (!user && !isAuthenticated) {
     return (
-      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+      <div className="max-w-md mx-auto p-4 sm:p-6 md:p-8 nb-card">
         <p className="text-red-600 font-medium">
           {error ?? 'Unable to load your profile right now. Please try again.'}
         </p>
@@ -63,7 +63,7 @@ function PrivateRoute({ children }: Readonly<{ children: React.ReactNode }>) {
               setRetrying(false)
             }
           }}
-          className="mt-4 rounded-xl bg-black px-6 py-2 text-white hover:bg-gray-800 active:scale-95 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-4 btn-primary px-6 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={retrying}
         >
           {retrying ? 'Retrying...' : 'Retry'}

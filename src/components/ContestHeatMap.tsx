@@ -135,7 +135,7 @@ export default function ContestHeatMap() {
         <select
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
-          className="text-sm border border-gray-300 rounded px-2 py-1 bg-white focus:ring-1 focus:ring-black focus:ring-offset-0"
+          className="text-sm nb-input bg-white py-1 cursor-pointer"
         >
           {years.map((y) => (
             <option key={y} value={y}>{y}</option>

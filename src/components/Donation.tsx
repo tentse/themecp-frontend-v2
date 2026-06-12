@@ -3,7 +3,10 @@ import upi from '@/assets/upi.jpeg'
 
 export default function Donation() {
   return (
-    <div className="p-4 sm:p-6 md:p-8 rounded-xl bg-white shadow-sm">
+    <div
+      className="p-4 sm:p-6 md:p-8 nb-card"
+      style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif' }}
+    >
       <h3 className="mb-6 text-xl sm:text-2xl font-bold">Donate</h3>
       <div className="mb-6 space-y-2 text-gray-700 font-bold">
         <p>
@@ -17,11 +20,11 @@ export default function Donation() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <div className="flex flex-col items-center">
-          <img src={usdt} alt="USDT" className="h-36 sm:h-44 md:h-52 rounded" />
+          <img src={usdt} alt="USDT" className="h-36 sm:h-44 md:h-52 rounded-[5px] border-2 border-black" />
           <p className="text-sm font-medium mt-2 text-center">USDT</p>
         </div>
         <div className="flex flex-col items-center">
-          <img src={upi} alt="UPI" className="h-36 sm:h-44 md:h-52 rounded" />
+          <img src={upi} alt="UPI" className="h-36 sm:h-44 md:h-52 rounded-[5px] border-2 border-black" />
           <p className="text-sm font-medium mt-2 text-center">UPI</p>
         </div>
       </div>
