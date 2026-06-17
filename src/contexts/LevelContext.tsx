@@ -31,7 +31,6 @@ export function LevelProvider({ children }: { children: ReactNode }) {
       const data = await getLevels();
       setLevels(data);
     } catch {
-      setLevels([]);
       setError('Failed to fetch level sheet. Please try again.');
     } finally {
       setLoading(false);

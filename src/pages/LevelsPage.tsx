@@ -29,7 +29,7 @@ export default function LevelsPage() {
             <div className="flex items-center justify-center border border-black p-3 sm:p-4">P4</div>
           </div>
           {error ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
+            <div className="mt-8 max-w-md mx-auto p-4 sm:p-6 md:p-8 nb-card flex flex-col items-center justify-center gap-4 text-center">
               <p className="text-base font-bold text-red-600">{error}</p>
               <p className="text-sm text-gray-600 max-w-xs leading-relaxed">
                 We couldn't load the levels data. Please try again.
