@@ -17,13 +17,15 @@ export default function Layout() {
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
       <main className="w-[95%] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 flex-1">
+        {/* Fixed-width rail: the leaderboard needs a predictable width so handles
+            stay readable instead of shrinking with the viewport. */}
         {showSidebar ? (
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
-            <div className="lg:col-span-3 min-w-0">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 sm:gap-8">
+            <div className="min-w-0">
               <Outlet />
             </div>
             {/* Stacks below the content on mobile, sticky rail on desktop. */}
-            <aside className="lg:col-span-1 space-y-6">
+            <aside className="space-y-6">
               <div className="lg:sticky lg:top-6 space-y-6">
                 <Leaderboard />
                 {isProfileRoute && <Donation />}

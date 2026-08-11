@@ -57,15 +57,17 @@ export default function Leaderboard({ limit = 10 }: Readonly<LeaderboardProps>) 
               rating column out of the narrow sidebar. */}
           <table className="w-full table-fixed border-collapse text-xs sm:text-sm font-bold">
             <colgroup>
-              <col className="w-7" />
+              {/* Rank fits "10"; Rating must fit the word "Rating" itself, which is
+                  wider than any 4-digit value it holds. */}
+              <col className="w-10" />
               <col />
-              <col className="w-14" />
+              <col className="w-20" />
             </colgroup>
             <thead>
               <tr className="bg-gray-100">
-                <th className="border-2 border-black px-1.5 py-1 text-left font-bold">#</th>
-                <th className="border-2 border-black px-1.5 py-1 text-left font-bold">Handle</th>
-                <th className="border-2 border-black px-1.5 py-1 text-right font-bold">Rating</th>
+                <th className="border-2 border-black px-1.5 py-2 text-left font-bold">#</th>
+                <th className="border-2 border-black px-1.5 py-2 text-left font-bold">Handle</th>
+                <th className="border-2 border-black px-1.5 py-2 text-right font-bold whitespace-nowrap">Rating</th>
               </tr>
             </thead>
             <tbody>
@@ -73,8 +75,8 @@ export default function Leaderboard({ limit = 10 }: Readonly<LeaderboardProps>) 
                 const color = getRatingLabelColor(entry.rating_label)
                 return (
                   <tr key={entry.user_id} className="hover:bg-gray-50 transition-colors">
-                    <td className="border-2 border-black px-1.5 py-1 text-gray-600">{index + 1}</td>
-                    <td className="border-2 border-black px-1.5 py-1">
+                    <td className="border-2 border-black px-1.5 py-2 text-gray-600">{index + 1}</td>
+                    <td className="border-2 border-black px-1.5 py-2">
                       <div className="flex items-center gap-1 min-w-0">
                         {/* Handle goes to the in-app profile; the ↗ is a SIBLING anchor to
                             Codeforces — an <a> nested in a <Link> would be invalid HTML. */}
@@ -105,7 +107,7 @@ export default function Leaderboard({ limit = 10 }: Readonly<LeaderboardProps>) 
                         </a>
                       </div>
                     </td>
-                    <td className="border-2 border-black px-1.5 py-1 text-right" style={{ color }}>
+                    <td className="border-2 border-black px-1.5 py-2 text-right" style={{ color }}>
                       {entry.rating}
                     </td>
                   </tr>
