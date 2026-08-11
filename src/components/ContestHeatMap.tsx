@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { getHeatgraphData } from '@/api/contestSession'
 import type { HeatgraphData } from '@/api/types'
 
@@ -79,8 +79,6 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
 
   const [tooltip, setTooltip] = useState<{ date: string; count: number } | null>(null)
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 })
-  const gridRef = useRef<HTMLDivElement | null>(null)
-  const [cellSize, setCellSize] = useState(MIN_CELL)
 
   const { grid, weekCount, monthStartWeeks } = useMemo(() => {
     const items = data?.items ?? []
@@ -125,23 +123,9 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
     return arr
   }, [currentYear])
 
-  // Size the cells to whatever width the card actually offers. Growing a cell
-  // widens the (scrollable) content, not the container, so this cannot feed back
-  // into itself. `loading` is a dep because the grid only mounts once loaded.
-  useEffect(() => {
-    const node = gridRef.current
-    if (!node || weekCount === 0) return
-    const update = () => {
-      const available = node.clientWidth
-      if (available <= 0) return
-      const fitted = Math.floor((available - (weekCount - 1) * CELL_GAP) / weekCount)
-      setCellSize(Math.max(MIN_CELL, Math.min(MAX_CELL, fitted)))
-    }
-    update()
-    const observer = new ResizeObserver(update)
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [weekCount, loading])
+  // Widest the grid is allowed to get, so cells stop growing at MAX_CELL on very
+  // wide screens instead of turning into big blocks.
+  const gridMaxWidth = weekCount * MAX_CELL + Math.max(0, weekCount - 1) * CELL_GAP
 
   if (loading) {
     return (
@@ -177,18 +161,18 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
       {/* Tooltip position and dismiss tracked on wrapper; cells are native buttons */}
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- tooltip positioning only */}
       <div
-        ref={gridRef}
         className="overflow-x-auto relative"
         onMouseMove={(e) => tooltip && setTooltipPos({ x: e.clientX, y: e.clientY })}
         onMouseLeave={() => setTooltip(null)}
       >
         {/* Month labels row */}
         <div
-          className="inline-grid mb-1"
+          className="grid mb-1"
           style={{
             gap: CELL_GAP,
-            gridTemplateColumns: `repeat(${weekCount}, ${cellSize}px)`,
-            width: weekCount * cellSize + (weekCount - 1) * CELL_GAP,
+            gridTemplateColumns: `repeat(${weekCount}, minmax(${MIN_CELL}px, 1fr))`,
+            width: '100%',
+            maxWidth: gridMaxWidth,
           }}
         >
           {Array.from({ length: weekCount }, (_, colIndex) => {
@@ -197,7 +181,6 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
               <div
                 key={colIndex}
                 className="text-[10px] text-gray-500 font-medium leading-none"
-                style={{ minWidth: cellSize }}
               >
                 {monthIndex >= 0 ? MONTH_LABELS[monthIndex] : ''}
               </div>
@@ -205,14 +188,19 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
           })}
         </div>
 
-        {/* Heat grid */}
+        {/* Heat grid. Columns are fractional so the cells grow to fill the card,
+            with minmax() keeping them tappable (and the wrapper scrolling) when
+            the viewport is too narrow. Squares come from aspect-ratio, so no
+            JS measurement is involved and it reflows on its own. */}
         <div
-          className="inline-grid"
+          className="grid"
           style={{
             gap: CELL_GAP,
-            gridTemplateRows: `repeat(7, ${cellSize}px)`,
+            gridTemplateRows: 'repeat(7, auto)',
             gridAutoFlow: 'column',
-            gridAutoColumns: `${cellSize}px`,
+            gridAutoColumns: `minmax(${MIN_CELL}px, 1fr)`,
+            width: '100%',
+            maxWidth: gridMaxWidth,
           }}
         >
           {Array.from({ length: weekCount }, (_, colIndex) =>
@@ -222,8 +210,8 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
                 return (
                   <div
                     key={`e-${rowIndex}-${colIndex}`}
-                    className="rounded-sm"
-                    style={{ width: cellSize, height: cellSize, backgroundColor: HEAT_COLORS[0] }}
+                    className="rounded-sm w-full"
+                    style={{ aspectRatio: '1 / 1', backgroundColor: HEAT_COLORS[0] }}
                   />
                 )
               }
@@ -235,11 +223,10 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
                   key={cell.date}
                   type="button"
                   title={titleText}
-                  className="rounded-sm transition-opacity hover:opacity-80 cursor-pointer relative border-0 p-0 block"
+                  className="rounded-sm transition-opacity hover:opacity-80 cursor-pointer relative border-0 p-0 block w-full"
                   style={{
                     backgroundColor: color,
-                    width: cellSize,
-                    height: cellSize,
+                    aspectRatio: '1 / 1',
                   }}
                   onMouseEnter={(e) => {
                     setTooltip({ date: cell.date, count: cell.count })
@@ -276,7 +263,7 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
           <div
             key={color}
             className="rounded-sm"
-            style={{ width: cellSize, height: cellSize, backgroundColor: color }}
+            style={{ width: MIN_CELL, height: MIN_CELL, backgroundColor: color }}
           />
         ))}
         <span>More</span>
