@@ -34,6 +34,16 @@ body {
      monospace text heavier/thicker on macOS than `antialiased` would. */
 }
 
+/* Monospace EVERYWHERE (DESIGN_GUIDE §2.1) — v1 did this with a universal
+   selector, so nothing (SVG text, form controls, third-party widgets) can fall
+   back to a system sans. Specificity 0,0,0 means every Tailwind font utility
+   still wins where one is applied on purpose. */
+*,
+*::before,
+*::after {
+  font-family: var(--font-sans);
+}
+
 button,
 a[href],
 [role="button"] {

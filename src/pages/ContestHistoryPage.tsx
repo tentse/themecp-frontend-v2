@@ -19,7 +19,7 @@ function ProblemCell(props: Readonly<{
 }>) {
   const bg = props.status === 'SOLVED' ? '#D4EDC9' : '#FFE3E3'
   return (
-    <td className="border-2 border-black p-3" style={{ backgroundColor: bg }}>
+    <td className="border-2 border-black px-3 py-1.5" style={{ backgroundColor: bg }}>
       <a
         href={buildCodeforcesUrl(props.problem.contestId, props.problem.index)}
         target="_blank"
@@ -28,7 +28,7 @@ function ProblemCell(props: Readonly<{
       >
         {props.problem.rating}
       </a>
-      <div className="mt-1 text-xs text-gray-700">
+      <div className="mt-0.5 text-xs font-bold text-gray-700">
         {problemStatusLabel(props.status, props.solvedInMin)}
       </div>
     </td>
@@ -66,20 +66,20 @@ export default function ContestHistoryPage() {
       ) : (
         <div className="p-4 sm:p-6 md:p-8 nb-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-xs sm:text-sm font-light">
+            <table className="w-full border-collapse text-xs sm:text-sm font-bold">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">#</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">Date</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">Theme</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">Level</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">P1</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">P2</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">P3</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">P4</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">Perf</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">Rating</th>
-                  <th className="border-2 border-black p-2 sm:p-3 text-left font-semibold">Δ</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">#</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">Date</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">Theme</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">Level</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">P1</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">P2</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">P3</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">P4</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">Perf</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">Rating</th>
+                  <th className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5 text-left font-bold">Δ</th>
                 </tr>
               </thead>
               <tbody>
@@ -88,17 +88,17 @@ export default function ContestHistoryPage() {
                     key={item.session_id}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="border-2 border-black p-2 sm:p-3">{skip + idx + 1}</td>
-                    <td className="border-2 border-black p-2 sm:p-3">{item.date}</td>
-                    <td className="border-2 border-black p-2 sm:p-3">{item.theme}</td>
-                    <td className="border-2 border-black p-2 sm:p-3">{item.level}</td>
+                    <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{skip + idx + 1}</td>
+                    <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{item.date}</td>
+                    <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{item.theme}</td>
+                    <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{item.level}</td>
                     <ProblemCell problem={item.p1} status={item.p1_status} solvedInMin={item.p1_solved_in_min} />
                     <ProblemCell problem={item.p2} status={item.p2_status} solvedInMin={item.p2_solved_in_min} />
                     <ProblemCell problem={item.p3} status={item.p3_status} solvedInMin={item.p3_solved_in_min} />
                     <ProblemCell problem={item.p4} status={item.p4_status} solvedInMin={item.p4_solved_in_min} />
-                    <td className="border-2 border-black p-3 font-medium" style={{ color: getRatingTextColor(item.performance) }}>~{item.performance}</td>
-                    <td className="border-2 border-black p-2 sm:p-3">{item.rating}</td>
-                    <td className="border-2 border-black p-3 font-medium" style={{ color: item.rating_delta >= 0 ? 'green' : 'red' }}>
+                    <td className="border-2 border-black px-3 py-1.5 font-bold" style={{ color: getRatingTextColor(item.performance) }}>~{item.performance}</td>
+                    <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{item.rating}</td>
+                    <td className="border-2 border-black px-3 py-1.5 font-bold" style={{ color: item.rating_delta >= 0 ? 'green' : 'red' }}>
                       {item.rating_delta >= 0 ? '+' : ''}{item.rating_delta}
                     </td>
                   </tr>
