@@ -27,3 +27,8 @@ dist-ssr
 .env.local
 .env.*.local
 .env.example
+
+# Internal working docs (kept locally, not tracked)
+api-v2.md
+QUICK_START.md
+DESIGN_GUIDE.md
