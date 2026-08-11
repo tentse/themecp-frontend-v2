@@ -3,10 +3,7 @@ import upi from '@/assets/upi.jpeg'
 
 export default function Donation() {
   return (
-    <div
-      className="p-4 sm:p-6 md:p-8 nb-card"
-      style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif' }}
-    >
+    <div className="p-4 sm:p-6 md:p-8 nb-card">
       <h3 className="mb-6 text-xl sm:text-2xl font-bold">Donate</h3>
       <div className="mb-6 space-y-2 text-gray-700 font-bold">
         <p>
