@@ -5,11 +5,14 @@ import type { LeaderboardEntry } from '@/api/types'
 import { getRatingLabelColor } from '@/utils/rating'
 
 interface LeaderboardProps {
-  /** How many rows to show. Bump to 15 or 20 here and nothing else changes. */
+  /**
+   * How many rows to show. Left undefined by default so the server decides how
+   * many to return; pass a number here to ask for a specific count (1–100).
+   */
   limit?: number
 }
 
-export default function Leaderboard({ limit = 10 }: Readonly<LeaderboardProps>) {
+export default function Leaderboard({ limit }: Readonly<LeaderboardProps>) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [failed, setFailed] = useState(false)
