@@ -42,7 +42,12 @@ interface DayCell {
   count: number
 }
 
-export default function ContestHeatMap() {
+interface ContestHeatMapProps {
+  /** undefined = the signed-in user's own activity */
+  userId?: string
+}
+
+export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>) {
   const currentYear = new Date().getFullYear()
   const [year, setYear] = useState(currentYear)
   const [data, setData] = useState<HeatgraphData | null>(null)
@@ -53,7 +58,7 @@ export default function ContestHeatMap() {
     let cancelled = false
     setLoading(true)
     setError(null)
-    getHeatgraphData(year)
+    getHeatgraphData(year, userId)
       .then((res) => {
         if (!cancelled) setData(res)
       })
@@ -64,7 +69,7 @@ export default function ContestHeatMap() {
         if (!cancelled) setLoading(false)
       })
     return () => { cancelled = true }
-  }, [year])
+  }, [year, userId])
 
   const [tooltip, setTooltip] = useState<{ date: string; count: number } | null>(null)
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 })

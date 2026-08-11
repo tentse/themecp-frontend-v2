@@ -94,6 +94,13 @@ function AppContent() {
             <Route path="history" element={<ContestHistoryPage />} />
             <Route path="import-export" element={<ImportExportPage />} />
           </Route>
+          {/* Public profiles — deliberately NOT behind PrivateRoute so logged-out
+              visitors can open them. React Router ranks static segments above
+              dynamic ones, so /profile/history above still wins over :userId. */}
+          <Route path="/profile/:userId" element={<ProfileLayout />}>
+            <Route index element={<ProfilePage />} />
+            <Route path="history" element={<ContestHistoryPage />} />
+          </Route>
         </Route>
         {/* Auth0 Demo Page - standalone route without Layout */}
         <Route path="/auth0-demo" element={<Auth0DemoPage />} />
