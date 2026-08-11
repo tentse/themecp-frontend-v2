@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import { getHeatgraphData } from '@/api/contestSession'
 import type { HeatgraphData } from '@/api/types'
 
@@ -11,6 +11,12 @@ const HEAT_COLORS = [
 ]
 
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+// Cells grow to fill whatever width the card gives us, rather than sitting at a
+// fixed 12px and leaving a wide empty gutter on the right.
+const CELL_GAP = 3
+const MIN_CELL = 12
+const MAX_CELL = 22
 
 function getColorLevel(count: number): number {
   if (count <= 0) return 0
@@ -73,6 +79,8 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
 
   const [tooltip, setTooltip] = useState<{ date: string; count: number } | null>(null)
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 })
+  const gridRef = useRef<HTMLDivElement | null>(null)
+  const [cellSize, setCellSize] = useState(MIN_CELL)
 
   const { grid, weekCount, monthStartWeeks } = useMemo(() => {
     const items = data?.items ?? []
@@ -117,6 +125,24 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
     return arr
   }, [currentYear])
 
+  // Size the cells to whatever width the card actually offers. Growing a cell
+  // widens the (scrollable) content, not the container, so this cannot feed back
+  // into itself. `loading` is a dep because the grid only mounts once loaded.
+  useEffect(() => {
+    const node = gridRef.current
+    if (!node || weekCount === 0) return
+    const update = () => {
+      const available = node.clientWidth
+      if (available <= 0) return
+      const fitted = Math.floor((available - (weekCount - 1) * CELL_GAP) / weekCount)
+      setCellSize(Math.max(MIN_CELL, Math.min(MAX_CELL, fitted)))
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [weekCount, loading])
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[120px]">
@@ -151,16 +177,18 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
       {/* Tooltip position and dismiss tracked on wrapper; cells are native buttons */}
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- tooltip positioning only */}
       <div
+        ref={gridRef}
         className="overflow-x-auto relative"
         onMouseMove={(e) => tooltip && setTooltipPos({ x: e.clientX, y: e.clientY })}
         onMouseLeave={() => setTooltip(null)}
       >
         {/* Month labels row */}
         <div
-          className="inline-grid gap-[3px] mb-1"
+          className="inline-grid mb-1"
           style={{
-            gridTemplateColumns: `repeat(${weekCount}, 12px)`,
-            width: weekCount * 12 + (weekCount - 1) * 3,
+            gap: CELL_GAP,
+            gridTemplateColumns: `repeat(${weekCount}, ${cellSize}px)`,
+            width: weekCount * cellSize + (weekCount - 1) * CELL_GAP,
           }}
         >
           {Array.from({ length: weekCount }, (_, colIndex) => {
@@ -169,7 +197,7 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
               <div
                 key={colIndex}
                 className="text-[10px] text-gray-500 font-medium leading-none"
-                style={{ minWidth: 12 }}
+                style={{ minWidth: cellSize }}
               >
                 {monthIndex >= 0 ? MONTH_LABELS[monthIndex] : ''}
               </div>
@@ -179,11 +207,12 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
 
         {/* Heat grid */}
         <div
-          className="inline-grid gap-[3px]"
+          className="inline-grid"
           style={{
-            gridTemplateRows: 'repeat(7, 12px)',
+            gap: CELL_GAP,
+            gridTemplateRows: `repeat(7, ${cellSize}px)`,
             gridAutoFlow: 'column',
-            gridAutoColumns: '12px',
+            gridAutoColumns: `${cellSize}px`,
           }}
         >
           {Array.from({ length: weekCount }, (_, colIndex) =>
@@ -194,7 +223,7 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
                   <div
                     key={`e-${rowIndex}-${colIndex}`}
                     className="rounded-sm"
-                    style={{ width: 12, height: 12, backgroundColor: HEAT_COLORS[0] }}
+                    style={{ width: cellSize, height: cellSize, backgroundColor: HEAT_COLORS[0] }}
                   />
                 )
               }
@@ -209,8 +238,8 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
                   className="rounded-sm transition-opacity hover:opacity-80 cursor-pointer relative border-0 p-0 block"
                   style={{
                     backgroundColor: color,
-                    width: 12,
-                    height: 12,
+                    width: cellSize,
+                    height: cellSize,
                   }}
                   onMouseEnter={(e) => {
                     setTooltip({ date: cell.date, count: cell.count })
@@ -247,7 +276,7 @@ export default function ContestHeatMap({ userId }: Readonly<ContestHeatMapProps>
           <div
             key={color}
             className="rounded-sm"
-            style={{ width: 12, height: 12, backgroundColor: color }}
+            style={{ width: cellSize, height: cellSize, backgroundColor: color }}
           />
         ))}
         <span>More</span>
