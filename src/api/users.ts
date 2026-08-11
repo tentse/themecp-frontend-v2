@@ -1,8 +1,14 @@
 import { apiGet, apiPut } from './client';
 import type { UserResponse, CodeforcesProblem } from './types';
 
-export async function getProfile(): Promise<UserResponse> {
-  return apiGet<UserResponse>('/users');
+/**
+ * Fetch a profile. Omit `userId` for your own (token required); pass one to read
+ * any user's public profile, in which case `email` comes back null unless you own it.
+ */
+export async function getProfile(userId?: string): Promise<UserResponse> {
+  const params: Record<string, string | number> = {};
+  if (userId) params.user_id = userId;
+  return apiGet<UserResponse>('/users', params);
 }
 
 export async function getVerificationProblem(codeforcesHandle: string): Promise<CodeforcesProblem> {

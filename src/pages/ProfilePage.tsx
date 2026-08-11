@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
 import { getHistory, getRatingPlot } from '@/api/contestSession'
 import type { ContestHistoryItem, RatingPlot } from '@/api/types'
+import { useProfileView } from '@/hooks/useProfileView'
 import AddHandle from '@/components/AddHandle'
 import RatingGraph from '@/components/RatingGraph'
 import ContestHeatMap from '@/components/ContestHeatMap'
 import ThemePieChart from '@/components/PieChart'
-import Donation from '@/components/Donation'
 import ratingPic from '@/assets/rating.png'
 import star from '@/assets/star.png'
 import mail from '@/assets/mail.png'
-import { getRatingColor } from '@/utils/rating'
+import { getRatingColor, getRatingLabelColor } from '@/utils/rating'
 
 export default function ProfilePage() {
-  const { user } = useAuth()
+  const { profileUser, viewedUserId, isOwnProfile } = useProfileView()
   const [contestHistory, setContestHistory] = useState<ContestHistoryItem[]>([])
   const [ratingPlot, setRatingPlot] = useState<RatingPlot | null>(null)
   const [showCfGraph, setShowCfGraph] = useState(false)
@@ -22,22 +21,25 @@ export default function ProfilePage() {
 
   useEffect(() => {
     let cancelled = false
+    setHistoryLoading(true)
     const load = async () => {
       try {
-        const res = await getHistory(0, 50)
+        const res = await getHistory(0, 50, viewedUserId)
         if (!cancelled) setContestHistory(res.items)
+      } catch {
+        if (!cancelled) setContestHistory([])
       } finally {
         if (!cancelled) setHistoryLoading(false)
       }
     }
     load()
     return () => { cancelled = true }
-  }, [])
+  }, [viewedUserId])
 
   useEffect(() => {
     let cancelled = false
     setPlotLoading(true)
-    getRatingPlot(showCfGraph)
+    getRatingPlot(showCfGraph, viewedUserId)
       .then((data) => {
         if (!cancelled) setRatingPlot(data)
       })
@@ -48,40 +50,39 @@ export default function ProfilePage() {
         if (!cancelled) setPlotLoading(false)
       })
     return () => { cancelled = true }
-  }, [showCfGraph])
+  }, [showCfGraph, viewedUserId])
 
-  if (!user) return (
+  if (!profileUser) return (
     <div className="flex items-center justify-center min-h-[200px]">
       <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
     </div>
   )
 
-  const rating = user.rating ?? 0
-  const maxRating = user.max_contest_rating ?? 0
-  const bestPerf = user.best_performance ?? 0
+  const rating = profileUser.rating ?? 0
+  const maxRating = profileUser.max_contest_rating ?? 0
+  const bestPerf = profileUser.best_performance ?? 0
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-      {/* Left Column - User Details, Graph, and Pie Chart */}
-      <div className="lg:col-span-2 space-y-6 sm:space-y-8">
-        <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
-          <div className="space-y-3 sm:space-y-4">
-          <p style={{ color: getRatingColor(rating) }} className="text-xl">
-            {user.rating_label}
+    <div className="space-y-6 sm:space-y-8">
+      <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
+        <div className="space-y-3 sm:space-y-4">
+          <p style={{ color: getRatingLabelColor(profileUser.rating_label) }} className="text-xl">
+            {profileUser.rating_label}
           </p>
-          {user.codeforces_handle ? (
-            <p className="text-2xl sm:text-3xl font-bold" style={{ color: getRatingColor(rating) }}>
-              {user.codeforces_handle}
+          {profileUser.codeforces_handle ? (
+            <p className="text-2xl sm:text-3xl font-bold" style={{ color: getRatingLabelColor(profileUser.rating_label) }}>
+              {profileUser.codeforces_handle}
             </p>
           ) : (
-            <AddHandle />
+            // Roughly 2,500 of 11,140 users have no handle. Only the owner can add one.
+            isOwnProfile ? <AddHandle /> : <p className="text-gray-600">No Codeforces handle linked</p>
           )}
           <p className="flex items-center gap-2 text-sm sm:text-base">
             <img src={ratingPic} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />
             Contest Rating:{' '}
-            <span className="font-mono" style={{ color: getRatingColor(rating) }}>{user.rating ?? '—'}</span>
+            <span className="font-mono" style={{ color: getRatingColor(rating) }}>{profileUser.rating ?? '—'}</span>
             <span className="text-sm text-gray-600">
-              (max. {user.rating_label}, <span className="font-mono">{maxRating}</span>)
+              (max. {profileUser.rating_label}, <span className="font-mono">{maxRating}</span>)
             </span>
           </p>
           <p className="flex items-center gap-2 text-sm sm:text-base">
@@ -92,53 +93,49 @@ export default function ProfilePage() {
           <p className="flex items-center gap-2 text-sm sm:text-base">
             <img src={star} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />
             <span>Contest attempts:</span>
-            <span className="font-mono">{user.contest_attempts}</span>
+            <span className="font-mono">{profileUser.contest_attempts}</span>
           </p>
-          <p className="flex items-center gap-2 text-sm sm:text-base">
-            <img src={mail} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />
-            Email: {user.email}
-          </p>
-          </div>
-        </div>
-
-        <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
-          <label className="flex items-center gap-3 mb-4 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showCfGraph}
-              onChange={(e) => setShowCfGraph(e.target.checked)}
-              className="w-4 h-4 rounded-[3px] border-2 border-black accent-black focus:ring-1 focus:ring-black focus:ring-offset-0"
-            />
-            <span>Plot CF rating graph</span>
-          </label>
-          {historyLoading || plotLoading ? (
-            <p>Loading chart...</p>
-          ) : (
-            <RatingGraph
-              themecpData={ratingPlot?.themecp_ratings ?? []}
-              cfData={showCfGraph ? (ratingPlot?.codeforces_ratings ?? []) : []}
-            />
-          )}
-        </div>
-
-        <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
-          <ContestHeatMap />
-        </div>
-
-        <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
-          {historyLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <ThemePieChart contestHistory={contestHistory} />
+          {/* The server returns email only to the owner, so its presence IS the
+              permission check — never decide this from the client's own state. */}
+          {profileUser.email && (
+            <p className="flex items-center gap-2 text-sm sm:text-base">
+              <img src={mail} alt="" className="h-4 w-4 sm:h-5 sm:w-5" />
+              Email: {profileUser.email}
+            </p>
           )}
         </div>
       </div>
 
-      {/* Right Column - Donation (Sticky) */}
-      <div className="lg:col-span-1">
-        <div className="lg:sticky lg:top-6">
-          <Donation />
-        </div>
+      <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
+        <label className="flex items-center gap-3 mb-4 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={showCfGraph}
+            onChange={(e) => setShowCfGraph(e.target.checked)}
+            className="w-4 h-4 rounded-[3px] border-2 border-black accent-black focus:ring-1 focus:ring-black focus:ring-offset-0"
+          />
+          <span>Plot CF rating graph</span>
+        </label>
+        {historyLoading || plotLoading ? (
+          <p>Loading chart...</p>
+        ) : (
+          <RatingGraph
+            themecpData={ratingPlot?.themecp_ratings ?? []}
+            cfData={showCfGraph ? (ratingPlot?.codeforces_ratings ?? []) : []}
+          />
+        )}
+      </div>
+
+      <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
+        <ContestHeatMap userId={viewedUserId} />
+      </div>
+
+      <div className="p-4 sm:p-6 md:p-8 rounded-[10px] border-2 border-gray-500 bg-white">
+        {historyLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <ThemePieChart contestHistory={contestHistory} />
+        )}
       </div>
     </div>
   )

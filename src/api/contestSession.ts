@@ -73,24 +73,41 @@ export async function deleteSession(sessionId: string): Promise<void> {
   await apiDelete<void>(`/contest-session/${sessionId}`);
 }
 
+/**
+ * The three read-only endpoints below accept an optional `user_id`. Omit it for your
+ * own data (token required); pass one to read any user's, no token needed.
+ *
+ * Only set `user_id` when it is actually defined — buildUrl() stringifies every value,
+ * so an undefined would be sent as the literal "undefined" and 404.
+ */
 export async function getHistory(
   skip = 0,
-  limit = 50
+  limit = 50,
+  userId?: string
 ): Promise<ContestHistoryOutput> {
-  const res = await apiGet<ContestHistoryOutput>('/contest-session/history', {
-    skip,
-    limit,
-  });
+  const params: Record<string, string | number> = { skip, limit };
+  if (userId) params.user_id = userId;
+  const res = await apiGet<ContestHistoryOutput>('/contest-session/history', params);
   res.items = res.items.map((item) => normalizeSessionPayload(item));
   return res;
 }
 
-export async function getRatingPlot(codeforces_rating = false): Promise<RatingPlot> {
-  return apiGet<RatingPlot>('/contest-session/rating-plot', {
+export async function getRatingPlot(
+  codeforces_rating = false,
+  userId?: string
+): Promise<RatingPlot> {
+  const params: Record<string, string | number> = {
     codeforces_rating: codeforces_rating ? 'true' : 'false',
-  });
+  };
+  if (userId) params.user_id = userId;
+  return apiGet<RatingPlot>('/contest-session/rating-plot', params);
 }
 
-export async function getHeatgraphData(year: number): Promise<HeatgraphData> {
-  return apiGet<HeatgraphData>('/contest-session/heatgraph-data', { year });
+export async function getHeatgraphData(
+  year: number,
+  userId?: string
+): Promise<HeatgraphData> {
+  const params: Record<string, string | number> = { year };
+  if (userId) params.user_id = userId;
+  return apiGet<HeatgraphData>('/contest-session/heatgraph-data', params);
 }

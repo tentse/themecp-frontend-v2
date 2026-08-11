@@ -42,6 +42,28 @@ export function getRatingTextColor(rating: number | null): string {
   return '#000000';
 }
 
+// One colour per rating band, keyed by the server's rating_label. The backend owns the
+// rating bands and sends the label, so colouring by label keeps the two from drifting.
+// getRatingTextColor() above is deliberately coarser (it merges Master with International
+// Master, and all three Grandmaster tiers) and stays as-is for problem/performance ratings.
+const RATING_LABEL_COLORS: Record<string, string> = {
+  Newbie: '#808080',
+  Pupil: '#008000',
+  Specialist: '#03A89E',
+  Expert: '#0000FF',
+  'Candidate Master': '#AA00AA',
+  Master: '#FF8C00',
+  'International Master': '#FF6A00',
+  Grandmaster: '#FF3333',
+  'International Grandmaster': '#FF0000',
+  'Legendary Grandmaster': '#AA0000',
+};
+
+export function getRatingLabelColor(label: string | null | undefined): string {
+  if (!label) return '#808080';
+  return RATING_LABEL_COLORS[label] ?? '#808080';
+}
+
 export function getRatingLabel(rating: number | null): string {
   if (rating === null || rating === undefined || rating <= 0) return 'Unrated';
   const r = parseInt(String(rating), 10);

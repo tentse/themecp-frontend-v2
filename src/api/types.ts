@@ -6,12 +6,21 @@ export interface AuthResponse {
 // Users
 export interface UserResponse {
   id: string;
-  email: string;
+  /** null unless you own the profile — the server decides, never infer this client-side. */
+  email: string | null;
   codeforces_handle: string | null;
   rating: number | null;
   max_contest_rating: number | null;
   best_performance: number | null;
   contest_attempts: number;
+  rating_label: string;
+}
+
+// Leaderboard (GET /users/leaderboard) — every field always present
+export interface LeaderboardEntry {
+  user_id: string;
+  codeforces_handle: string;
+  rating: number;
   rating_label: string;
 }
 

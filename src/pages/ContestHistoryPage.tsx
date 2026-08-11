@@ -3,6 +3,7 @@ import { getHistory } from '@/api/contestSession'
 import type { ContestHistoryItem, ProblemDetail, ProblemStatus } from '@/api/types'
 import { buildCodeforcesUrl } from '@/utils/codeforces'
 import { getRatingTextColor } from '@/utils/rating'
+import { useProfileView } from '@/hooks/useProfileView'
 
 function problemStatusLabel(status: ProblemStatus, solvedInMin: number | null | undefined): string {
   if (status === 'SOLVED') {
@@ -36,25 +37,34 @@ function ProblemCell(props: Readonly<{
 }
 
 export default function ContestHistoryPage() {
+  const { viewedUserId } = useProfileView()
   const [items, setItems] = useState<ContestHistoryItem[]>([])
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(0)
   const [loading, setLoading] = useState(true)
   const limit = 50
 
+  // Reset paging when switching to a different user's history.
+  useEffect(() => { setSkip(0) }, [viewedUserId])
+
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    getHistory(skip, limit).then((res) => {
+    getHistory(skip, limit, viewedUserId).then((res) => {
       if (!cancelled) {
         setItems(res.items)
         setTotal(res.total)
+      }
+    }).catch(() => {
+      if (!cancelled) {
+        setItems([])
+        setTotal(0)
       }
     }).finally(() => {
       if (!cancelled) setLoading(false)
     })
     return () => { cancelled = true }
-  }, [skip, limit])
+  }, [skip, limit, viewedUserId])
 
   return (
     <div className="space-y-6">
