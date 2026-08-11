@@ -28,7 +28,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="w-[90%] max-w-[90vw] mx-auto p-4 sm:p-6 md:p-8 nb-panel">
+      <div className="w-full p-4 sm:p-6 md:p-8 nb-panel">
         <h2 className="text-2xl sm:text-3xl font-bold mb-4">
           What is Theme<span className="text-red-600">CP</span>?
         </h2>
@@ -39,7 +39,7 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="w-[90%] max-w-[90vw] mx-auto p-4 sm:p-6 md:p-8 nb-panel">
+      <div className="w-full p-4 sm:p-6 md:p-8 nb-panel">
         <h2 className="text-2xl sm:text-3xl font-bold mb-6">Why does it work?</h2>
         <ul className="list-disc list-inside space-y-3 sm:space-y-4 text-base sm:text-lg text-gray-700">
           <li>ThemeCP lets you train with problems in the entire difficulty range you have a shot at solving.</li>
