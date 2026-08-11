@@ -34,8 +34,8 @@ export default function Leaderboard({ limit = 10 }: Readonly<LeaderboardProps>) 
   }, [limit])
 
   return (
-    <div className="p-4 nb-card">
-      <h3 className="mb-3 text-lg font-bold">Leaderboard</h3>
+    <div className="p-3 sm:p-4 nb-card">
+      <h3 className="mb-3 text-base sm:text-lg font-bold">Top ThemeCP&apos;r</h3>
 
       {loading && (
         <div className="flex items-center justify-center py-6">
@@ -52,50 +52,68 @@ export default function Leaderboard({ limit = 10 }: Readonly<LeaderboardProps>) 
       )}
 
       {!loading && !failed && entries.length > 0 && (
-        <ol className="list-none p-0 m-0 space-y-1">
-          {entries.map((entry, index) => (
-            <li key={entry.user_id} className="flex items-center gap-2 text-sm">
-              {/* The row links in-app; the Codeforces link is a SIBLING anchor —
-                  an <a> nested inside a <Link> would be invalid HTML. */}
-              <Link
-                to={`/profile/${entry.user_id}`}
-                className="flex flex-1 items-center gap-2 min-w-0 no-underline text-black rounded-[5px] px-1 py-1 hover:bg-gray-100 transition-colors"
-              >
-                <span className="w-5 shrink-0 text-gray-600">{index + 1}</span>
-                <span
-                  className="flex-1 truncate font-bold"
-                  style={{ color: getRatingLabelColor(entry.rating_label) }}
-                  title={`${entry.codeforces_handle} — ${entry.rating_label}`}
-                >
-                  {entry.codeforces_handle}
-                </span>
-                <span
-                  className="shrink-0 font-bold"
-                  style={{ color: getRatingLabelColor(entry.rating_label) }}
-                >
-                  {entry.rating}
-                </span>
-              </Link>
-              <a
-                href={`https://codeforces.com/profile/${entry.codeforces_handle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`${entry.codeforces_handle} on Codeforces`}
-                aria-label={`${entry.codeforces_handle} on Codeforces`}
-                className="shrink-0 text-gray-500 hover:text-black transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </a>
-            </li>
-          ))}
-        </ol>
+        <div>
+          {/* table-fixed so the handle column truncates rather than pushing the
+              rating column out of the narrow sidebar. */}
+          <table className="w-full table-fixed border-collapse text-xs sm:text-sm font-bold">
+            <colgroup>
+              <col className="w-7" />
+              <col />
+              <col className="w-14" />
+            </colgroup>
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border-2 border-black px-1.5 py-1 text-left font-bold">#</th>
+                <th className="border-2 border-black px-1.5 py-1 text-left font-bold">Handle</th>
+                <th className="border-2 border-black px-1.5 py-1 text-right font-bold">Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((entry, index) => {
+                const color = getRatingLabelColor(entry.rating_label)
+                return (
+                  <tr key={entry.user_id} className="hover:bg-gray-50 transition-colors">
+                    <td className="border-2 border-black px-1.5 py-1 text-gray-600">{index + 1}</td>
+                    <td className="border-2 border-black px-1.5 py-1">
+                      <div className="flex items-center gap-1 min-w-0">
+                        {/* Handle goes to the in-app profile; the ↗ is a SIBLING anchor to
+                            Codeforces — an <a> nested in a <Link> would be invalid HTML. */}
+                        <Link
+                          to={`/profile/${entry.user_id}`}
+                          className="truncate no-underline hover:underline"
+                          style={{ color }}
+                          title={`${entry.codeforces_handle} — ${entry.rating_label}`}
+                        >
+                          {entry.codeforces_handle}
+                        </Link>
+                        <a
+                          href={`https://codeforces.com/profile/${entry.codeforces_handle}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`${entry.codeforces_handle} on Codeforces`}
+                          aria-label={`${entry.codeforces_handle} on Codeforces`}
+                          className="shrink-0 text-gray-500 hover:text-black transition-colors"
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </a>
+                      </div>
+                    </td>
+                    <td className="border-2 border-black px-1.5 py-1 text-right" style={{ color }}>
+                      {entry.rating}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )
