@@ -194,6 +194,14 @@ export default function ContestStartPage() {
         problemsStatus.p4.status ?? problemsStatus.p4_status ?? 'UNSOLVED',
       ]
     : ['UNSOLVED', 'UNSOLVED', 'UNSOLVED', 'UNSOLVED']
+  const solvedInMins = problemsStatus
+    ? [
+        problemsStatus.p1.solved_in_min,
+        problemsStatus.p2.solved_in_min,
+        problemsStatus.p3.solved_in_min,
+        problemsStatus.p4.solved_in_min,
+      ]
+    : [null, null, null, null]
 
   if (inCountdown) {
     return (
@@ -248,11 +256,14 @@ export default function ContestStartPage() {
             <th className="border border-black p-2 sm:p-3 text-left font-semibold text-sm sm:text-base">
               Problem
             </th>
-            <th className="border border-black p-2 sm:p-3 w-20 sm:w-24 text-left font-semibold text-sm sm:text-base">
+            <th className="border border-black p-2 sm:p-3 w-20 sm:w-24 text-center font-semibold text-sm sm:text-base">
               Rating
             </th>
-            <th className="border border-black p-2 sm:p-3 w-24 sm:w-28 text-left font-semibold text-sm sm:text-base">
+            <th className="border border-black p-2 sm:p-3 w-24 sm:w-28 text-center font-semibold text-sm sm:text-base">
               Status
+            </th>
+            <th className="border border-black p-2 sm:p-3 w-24 sm:w-28 text-center font-semibold text-sm sm:text-base">
+              Solved in min
             </th>
           </tr>
         </thead>
@@ -274,18 +285,21 @@ export default function ContestStartPage() {
                   </a>
                 </td>
                 <td
-                  className="border border-black p-2 sm:p-3 font-medium text-sm sm:text-base"
+                  className="border border-black p-2 sm:p-3 text-center font-medium text-sm sm:text-base"
                   style={{ backgroundColor: getRatingColor(p.rating) }}
                 >
                   {p.rating}
                 </td>
                 <td
-                  className="border border-black p-2 sm:p-3 font-medium text-sm sm:text-base"
+                  className="border border-black p-2 sm:p-3 text-center font-medium text-sm sm:text-base"
                   style={{
                     backgroundColor: solved ? '#D4EDC9' : '#FFE3E3',
                   }}
                 >
                   {statusLabel(statuses[i], problemsStatus?.[`p${num}` as 'p1' | 'p2' | 'p3' | 'p4'].solved_in_min)}
+                </td>
+                <td className="border border-black p-2 sm:p-3 text-center text-sm sm:text-base">
+                  {solvedInMins[i] ?? '—'}
                 </td>
               </tr>
             )
