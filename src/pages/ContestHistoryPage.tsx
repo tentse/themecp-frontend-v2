@@ -18,7 +18,11 @@ function ProblemCell(props: Readonly<{
   status: ProblemStatus
   solvedInMin?: number | null
 }>) {
-  const bg = props.status === 'SOLVED' ? '#D4EDC9' : '#FFE3E3'
+  const bg = props.status === 'SOLVED'
+    ? '#D4EDC9'
+    : props.status === 'UPSOLVED'
+      ? '#FFCC88'
+      : '#FF6B6B'
   return (
     <td className="border-2 border-black px-3 py-1.5" style={{ backgroundColor: bg }}>
       <a
@@ -68,7 +72,23 @@ export default function ContestHistoryPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl sm:text-2xl font-bold">Contest History</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h2 className="text-xl sm:text-2xl font-bold">Contest History</h2>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm font-semibold">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-3 w-3 border border-black" style={{ backgroundColor: '#D4EDC9' }} />
+            Solved
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-3 w-3 border border-black" style={{ backgroundColor: '#FFCC88' }} />
+            Upsolved
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-3 w-3 border border-black" style={{ backgroundColor: '#FF6B6B' }} />
+            Unsolved
+          </span>
+        </div>
+      </div>
       {loading ? (
         <div className="flex items-center justify-center min-h-[200px]">
           <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black" />
