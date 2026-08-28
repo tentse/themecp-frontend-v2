@@ -271,29 +271,26 @@ function ReviewView(props: Readonly<{
         })}
       </div>
 
-      <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => props.onRegenerate()}
-            disabled={props.regenerating || props.starting}
-            className="rounded-[10px] border-2 border-black bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 active:opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer"
-          >
-            {props.regenerating ? 'Resetting...' : 'Reset contest'}
-          </button>
-        </div>
-        <div className="text-sm font-medium text-gray-900">
-          Contest starts 15 seconds after you press start.
-        </div>
+      <div className="mt-6 text-sm font-medium text-gray-900">
+        Contest starts 15 seconds after you press start.
       </div>
 
-      <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
+      <div className="mt-3 flex items-center justify-between gap-3">
         <button
+          type="button"
           onClick={props.onStart}
           disabled={props.starting}
           className="w-full sm:w-auto btn-primary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {props.starting ? 'Starting...' : 'Start contest'}
+        </button>
+        <button
+          type="button"
+          onClick={() => props.onRegenerate()}
+          disabled={props.regenerating || props.starting}
+          className="w-full sm:w-auto rounded-[10px] border-2 border-black bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 active:opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer"
+        >
+          {props.regenerating ? 'Resetting...' : 'Reset contest'}
         </button>
       </div>
     </PageCard>
