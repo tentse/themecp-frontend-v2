@@ -122,10 +122,10 @@ export default function ContestHistoryPage() {
                     <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{item.date}</td>
                     <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{item.theme}</td>
                     <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{item.level}</td>
-                    <ProblemCell problem={item.p1} status={item.p1_status} solvedInMin={item.p1_solved_in_min} />
-                    <ProblemCell problem={item.p2} status={item.p2_status} solvedInMin={item.p2_solved_in_min} />
-                    <ProblemCell problem={item.p3} status={item.p3_status} solvedInMin={item.p3_solved_in_min} />
-                    <ProblemCell problem={item.p4} status={item.p4_status} solvedInMin={item.p4_solved_in_min} />
+                    <ProblemCell problem={item.p1} status={item.p1.status ?? item.p1_status} solvedInMin={item.p1.solved_in_min ?? item.p1_solved_in_min} />
+                    <ProblemCell problem={item.p2} status={item.p2.status ?? item.p2_status} solvedInMin={item.p2.solved_in_min ?? item.p2_solved_in_min} />
+                    <ProblemCell problem={item.p3} status={item.p3.status ?? item.p3_status} solvedInMin={item.p3.solved_in_min ?? item.p3_solved_in_min} />
+                    <ProblemCell problem={item.p4} status={item.p4.status ?? item.p4_status} solvedInMin={item.p4.solved_in_min ?? item.p4_solved_in_min} />
                     <td className="border-2 border-black px-3 py-1.5 font-bold" style={{ color: getRatingTextColor(item.performance) }}>~{item.performance}</td>
                     <td className="border-2 border-black px-2 py-1 sm:px-3 sm:py-1.5">{item.rating}</td>
                     <td className="border-2 border-black px-3 py-1.5 font-bold" style={{ color: item.rating_delta >= 0 ? 'green' : 'red' }}>

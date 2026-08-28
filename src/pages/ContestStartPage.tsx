@@ -30,8 +30,13 @@ function PageCard({ children }: Readonly<{ children: React.ReactNode }>) {
   )
 }
 
-function statusLabel(s: ProblemStatus): string {
-  return s === 'SOLVED' ? 'Accepted' : 'Pending'
+function statusLabel(s: ProblemStatus, solvedInMin: number | null | undefined): string {
+  if (s === 'SOLVED') {
+    return solvedInMin != null && Number.isFinite(solvedInMin)
+      ? `Accepted (${solvedInMin} min)`
+      : 'Accepted'
+  }
+  return 'Pending'
 }
 
 export default function ContestStartPage() {
@@ -183,10 +188,10 @@ export default function ContestStartPage() {
   const problems: ProblemDetail[] = [session.p1, session.p2, session.p3, session.p4]
   const statuses: ProblemStatus[] = problemsStatus
     ? [
-        problemsStatus.p1_status,
-        problemsStatus.p2_status,
-        problemsStatus.p3_status,
-        problemsStatus.p4_status,
+        problemsStatus.p1.status ?? problemsStatus.p1_status ?? 'UNSOLVED',
+        problemsStatus.p2.status ?? problemsStatus.p2_status ?? 'UNSOLVED',
+        problemsStatus.p3.status ?? problemsStatus.p3_status ?? 'UNSOLVED',
+        problemsStatus.p4.status ?? problemsStatus.p4_status ?? 'UNSOLVED',
       ]
     : ['UNSOLVED', 'UNSOLVED', 'UNSOLVED', 'UNSOLVED']
 
@@ -280,7 +285,7 @@ export default function ContestStartPage() {
                     backgroundColor: solved ? '#D4EDC9' : '#FFE3E3',
                   }}
                 >
-                  {statusLabel(statuses[i])}
+                  {statusLabel(statuses[i], problemsStatus?.[`p${num}` as 'p1' | 'p2' | 'p3' | 'p4'].solved_in_min)}
                 </td>
               </tr>
             )

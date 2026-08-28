@@ -15,6 +15,8 @@ function normalizeProblemDetail(p: ProblemDetail & { contestID?: string }): Prob
     contestId: p.contestId ?? p.contestID ?? '',
     index: p.index,
     rating: p.rating,
+    status: p.status,
+    solved_in_min: p.solved_in_min,
   };
 }
 

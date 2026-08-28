@@ -58,6 +58,8 @@ export interface ProblemDetail {
   contestId: string;
   index: string;
   rating: number;
+  status?: ProblemStatus;
+  solved_in_min?: number | null;
 }
 
 export interface ContestSessionInput {
@@ -88,10 +90,10 @@ export interface ContestSessionProblemsStatus {
   p2: ProblemDetail;
   p3: ProblemDetail;
   p4: ProblemDetail;
-  p1_status: ProblemStatus;
-  p2_status: ProblemStatus;
-  p3_status: ProblemStatus;
-  p4_status: ProblemStatus;
+  p1_status?: ProblemStatus;
+  p2_status?: ProblemStatus;
+  p3_status?: ProblemStatus;
+  p4_status?: ProblemStatus;
 }
 
 // Contest History (v2)
