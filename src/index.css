@@ -23,7 +23,7 @@
 }
 
 html {
-  /* Scale the whole UI up to v1's base (20px). All Tailwind text-*/spacing
+  /* Scale the whole UI up to v1's base (20px). All Tailwind text and spacing
      utilities are rem-based, so they grow with this. */
   font-size: 125%;
 }
@@ -41,7 +41,7 @@ body {
 *,
 *::before,
 *::after {
-  font-family: var(--font-sans);
+  font-family: monospace;
 }
 
 button,
