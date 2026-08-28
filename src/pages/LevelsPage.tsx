@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { useLevel } from '@/contexts/LevelContext'
 import { getRatingColor } from '@/utils/rating'
 
 export default function LevelsPage() {
-  const { levels, loading } = useLevel()
+  const { levels, loading, error, refetchLevels, clearError } = useLevel()
+  const [retrying, setRetrying] = useState(false)
 
   if (loading) {
     return (
@@ -26,7 +28,38 @@ export default function LevelsPage() {
             <div className="flex items-center justify-center border border-black p-3 sm:p-4">P3</div>
             <div className="flex items-center justify-center border border-black p-3 sm:p-4">P4</div>
           </div>
-          {levels.map((item) => (
+          {error ? (
+            <div className="mt-8 max-w-md mx-auto p-4 sm:p-6 md:p-8 nb-card flex flex-col items-center justify-center gap-4 text-center">
+              <p className="text-base font-bold text-red-600">{error}</p>
+              <p className="text-sm text-gray-600 max-w-xs leading-relaxed">
+                We couldn't load the levels data. Please try again.
+              </p>
+              <button
+                onClick={async () => {
+                  if (retrying) return
+                  setRetrying(true)
+                  try {
+                    clearError()
+                    await refetchLevels()
+                  } finally {
+                    setRetrying(false)
+                  }
+                }}
+                className="mt-2 btn-primary px-6 py-2.5 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={retrying}
+              >
+                {retrying ? 'Retrying...' : 'Retry'}
+              </button>
+            </div>
+          ) : levels.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
+              <p className="text-base font-bold text-gray-800">You'll see levels here...</p>
+              <p className="text-sm text-gray-600 max-w-xs leading-relaxed">
+                There are no levels available at the moment. Please check back later or explore other sections of the site.
+              </p>
+            </div>
+          ) : (
+            levels.map((item) => (
             <div
               key={item.id}
               className="grid grid-cols-7 items-center min-w-[820px] text-sm sm:text-base"
@@ -71,7 +104,7 @@ export default function LevelsPage() {
                 {item.p4_rating}
               </div>
             </div>
-          ))}
+          )))}
         </div>
       </div>
     </div>
