@@ -16,7 +16,7 @@ function RatingBox({ label, rating }: Readonly<{ label: string; rating: number }
       <div className="text-sm font-semibold text-gray-900">{label}</div>
       <div
         className="mt-2 rounded-lg px-4 py-3 text-center font-mono text-xl font-bold flex-1 flex items-center justify-center"
-        style={{ backgroundColor: `${getRatingColor(rating)}1A` }}
+        style={{ backgroundColor: getRatingColor(rating) }}
       >
         {rating}
       </div>
